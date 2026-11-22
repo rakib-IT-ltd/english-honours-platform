@@ -1,15 +1,20 @@
 // Prisma schema.
 //
-// Module 1 - Academic structure: universities, departments, academic years, academic sessions,
-// syllabuses and their source/verification records. Further models (courses, content, users, ...)
-// are added module by module after approval of each phase.
+// Module 1 - Academic structure (multi-university):
+//
+//   University -> Department -> AcademicProgram -> ProgramLevel -> Syllabus (a syllabus version)
+//   AcademicLevel is a SHARED, university-independent list of the five platform levels.
+//   AcademicSession and Syllabus (with its sources/verification) are university-specific.
+//   Courses, topics and learning materials hang off Syllabus and are added in later modules.
+//
+// Further models (courses, content, users, ...) are added module by module after approval.
 // The connection URL is supplied by prisma.config.ts (Prisma 7) from DATABASE_URL.
 //
-// Rules enforced OUTSIDE this file (see database/documentation/DATABASE_RULES.md):
-//  - AcademicYear.yearNumber is CHECKed to 1..4 and AcademicSession.endYear >= startYear in the SQL
-//    migration (Prisma cannot express CHECK constraints).
-//  - A Syllabus's session and academic year must belong to the same university; verified by the
-//    service that writes syllabuses.
+// Rules enforced OUTSIDE this file, in the SQL migrations (Prisma cannot express CHECK constraints):
+//  - University.code is a lowercase URL-safe identifier.
+//  - AcademicLevel.sequence >= 1; AcademicSession.endYear >= startYear.
+// Same-university consistency IS enforced here, through composite foreign keys that carry
+// universityId (see Department, AcademicSession, AcademicProgram and Syllabus).
 
 generator client {
   provider     = "prisma-client"
@@ -28,9 +33,21 @@ enum VerificationStatus {
   VERIFIED
 }
 
+/// Kind of academic program. Extend (with a migration) if other kinds are ever needed.
+enum ProgrammeType {
+  HONOURS
+  MASTERS
+}
+
+/// What a syllabus source document is. Only OFFICIAL_UNIVERSITY_DOCUMENT can support verification.
+enum SyllabusSourceType {
+  OFFICIAL_UNIVERSITY_DOCUMENT
+  OTHER
+}
+
 model University {
   id        String   @id @default(uuid())
-  /// Short stable identifier used in code and imports (unique).
+  /// Short stable lowercase identifier, also used in website URLs (e.g. "nu"). Unique.
   code      String   @unique
   nameEn    String
   /// Bangla name; optional so unreviewed Bangla text is never forced in.
@@ -39,7 +56,9 @@ model University {
   updatedAt DateTime @updatedAt
 
   departments      Department[]
+  academicPrograms AcademicProgram[]
   academicSessions AcademicSession[]
+  syllabuses       Syllabus[]
 }
 
 model Department {
@@ -51,29 +70,67 @@ model Department {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  university    University     @relation(fields: [universityId], references: [id])
-  academicYears AcademicYear[]
+  university       University        @relation(fields: [universityId], references: [id])
+  academicPrograms AcademicProgram[]
 
   @@unique([universityId, code])
+  /// Target of composite foreign keys that must stay inside one university.
+  @@unique([id, universityId])
 }
 
-/// A year of the Honours programme of a department (1 = First Year ... 4 = Fourth Year).
-model AcademicYear {
-  id           String   @id @default(uuid())
-  departmentId String
-  yearNumber   Int
-  nameEn       String
-  nameBn       String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+/// The five shared platform levels (Honours 1st-4th Year, Masters 1st Year). NOT per university.
+model AcademicLevel {
+  id            String   @id @default(uuid())
+  /// Stable identifier, e.g. HONOURS_1 ... HONOURS_4, MASTERS_1.
+  code          String   @unique
+  /// Display order across all levels (1-based, unique).
+  sequence      Int      @unique
+  nameEn        String
+  nameBn        String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  department Department @relation(fields: [departmentId], references: [id])
+  programs   ProgramLevel[]
+}
+
+/// A degree program of one university, e.g. "English (Honours)" or "English (Masters)".
+model AcademicProgram {
+  id            String        @id @default(uuid())
+  universityId  String
+  departmentId  String
+  /// Unique within the university.
+  code          String
+  programmeType ProgrammeType
+  nameEn        String
+  nameBn        String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  university University     @relation(fields: [universityId], references: [id])
+  /// The department must belong to the same university.
+  department Department     @relation(fields: [departmentId, universityId], references: [id, universityId])
+  levels     ProgramLevel[]
   syllabuses Syllabus[]
 
-  @@unique([departmentId, yearNumber])
+  @@unique([universityId, code])
+  @@unique([id, universityId])
+  @@index([departmentId, universityId])
 }
 
-/// A university's academic session, e.g. label "2024-2025".
+/// Which shared levels a program offers (e.g. an Honours program offers HONOURS_1..4).
+model ProgramLevel {
+  programId String
+  levelId   String
+
+  program AcademicProgram @relation(fields: [programId], references: [id])
+  level   AcademicLevel   @relation(fields: [levelId], references: [id])
+  syllabuses Syllabus[]
+
+  @@id([programId, levelId])
+  @@index([levelId])
+}
+
+/// A university's academic session, e.g. label "2024-2025". Meaning is defined by the university.
 model AcademicSession {
   id           String   @id @default(uuid())
   universityId String
@@ -87,40 +144,53 @@ model AcademicSession {
   syllabuses Syllabus[]
 
   @@unique([universityId, label])
+  @@unique([id, universityId])
 }
 
-/// The syllabus of ONE academic year in ONE session, in a given version.
+/// A syllabus VERSION: one program + one shared level + one session + a version label, always
+/// inside a single university. Courses (titles, codes, credits, marks) attach here in a later module.
 model Syllabus {
   id                 String             @id @default(uuid())
+  /// Denormalised on purpose: it lets the composite foreign keys below guarantee that program and
+  /// session belong to the same university as the syllabus.
+  universityId       String
+  academicProgramId  String
+  academicLevelId    String
   academicSessionId  String
-  academicYearId     String
   versionLabel       String
   verificationStatus VerificationStatus @default(UNVERIFIED)
   notes              String?
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
 
-  academicSession AcademicSession        @relation(fields: [academicSessionId], references: [id])
-  academicYear    AcademicYear           @relation(fields: [academicYearId], references: [id])
+  university      University      @relation(fields: [universityId], references: [id])
+  academicProgram AcademicProgram @relation(fields: [academicProgramId, universityId], references: [id, universityId])
+  academicSession AcademicSession @relation(fields: [academicSessionId, universityId], references: [id, universityId])
+  /// The program must actually offer this level.
+  programLevel    ProgramLevel    @relation(fields: [academicProgramId, academicLevelId], references: [programId, levelId])
   sources         SyllabusSource[]
   verifications   SyllabusVerification[]
 
-  @@unique([academicSessionId, academicYearId, versionLabel])
-  @@index([academicYearId])
+  /// Explicit name: the default would exceed PostgreSQL's 63-character identifier limit.
+  @@unique([academicProgramId, academicLevelId, academicSessionId, versionLabel], map: "Syllabus_program_level_session_version_key")
+  @@index([universityId])
+  @@index([academicSessionId, universityId])
+  @@index([academicProgramId, academicLevelId])
 }
 
-/// An official source document a syllabus was taken from.
+/// A source document a syllabus was taken from.
 model SyllabusSource {
-  id          String    @id @default(uuid())
+  id          String             @id @default(uuid())
   syllabusId  String
+  sourceType  SyllabusSourceType @default(OTHER)
   title       String
   issuingBody String
   /// Path under academic-content/ or a URL to the original document.
   documentRef String
-  publishedOn DateTime? @db.Date
+  publishedOn DateTime?          @db.Date
   /// SHA-256 of the stored document, to detect later changes.
   sha256      String?
-  createdAt   DateTime  @default(now())
+  createdAt   DateTime           @default(now())
 
   syllabus Syllabus @relation(fields: [syllabusId], references: [id])
 

@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { validateEnv } from './config/env.validation.js';
 import { AcademicSessionsModule } from './academic-sessions/academic-sessions.module.js';
-import { AcademicYearsModule } from './academic-years/academic-years.module.js';
+import { AcademicLevelsModule } from './academic-levels/academic-levels.module.js';
+import { AcademicProgramsModule } from './academic-programs/academic-programs.module.js';
 import { DepartmentsModule } from './departments/departments.module.js';
 import { HealthModule } from './health/health.module.js';
 import { SyllabusesModule } from './syllabuses/syllabuses.module.js';
@@ -21,7 +22,8 @@ import { PrismaModule } from './database/prisma.module.js';
     HealthModule,
     UniversitiesModule,
     DepartmentsModule,
-    AcademicYearsModule,
+    AcademicProgramsModule,
+    AcademicLevelsModule,
     AcademicSessionsModule,
     SyllabusesModule,
   ],

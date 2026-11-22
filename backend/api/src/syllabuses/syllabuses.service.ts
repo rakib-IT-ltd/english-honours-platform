@@ -6,12 +6,13 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service.js';
-import { VerificationStatus } from '../generated/prisma/enums.js';
+import { SyllabusSourceType, VerificationStatus } from '../generated/prisma/enums.js';
 
 export interface SyllabusFilter {
+  universityId?: string;
+  academicProgramId?: string;
+  academicLevelId?: string;
   academicSessionId?: string;
-  academicYearId?: string;
-  departmentId?: string;
 }
 
 export interface VerifySyllabusInput {
@@ -27,9 +28,10 @@ export class SyllabusesService {
   findAll(filter: SyllabusFilter = {}) {
     return this.prisma.syllabus.findMany({
       where: {
+        universityId: filter.universityId,
+        academicProgramId: filter.academicProgramId,
+        academicLevelId: filter.academicLevelId,
         academicSessionId: filter.academicSessionId,
-        academicYearId: filter.academicYearId,
-        ...(filter.departmentId ? { academicYear: { departmentId: filter.departmentId } } : {}),
       },
       orderBy: [{ createdAt: 'desc' }],
     });
@@ -61,7 +63,14 @@ export class SyllabusesService {
     return this.prisma.$transaction(async (tx) => {
       const syllabus = await tx.syllabus.findUnique({
         where: { id },
-        include: { _count: { select: { sources: true } } },
+        // Only official university documents can support verification.
+        include: {
+          _count: {
+            select: {
+              sources: { where: { sourceType: SyllabusSourceType.OFFICIAL_UNIVERSITY_DOCUMENT } },
+            },
+          },
+        },
       });
       if (!syllabus) throw new NotFoundException(`Syllabus ${id} not found`);
       if (syllabus.verificationStatus === VerificationStatus.VERIFIED) {
@@ -69,7 +78,7 @@ export class SyllabusesService {
       }
       if (syllabus._count.sources === 0) {
         throw new UnprocessableEntityException(
-          'A syllabus cannot be verified without at least one source document',
+          'A syllabus cannot be verified without at least one official university source document',
         );
       }
 

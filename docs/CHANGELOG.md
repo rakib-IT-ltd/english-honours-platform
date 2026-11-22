@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+### Changed
+
+- Scope update: NU and DU are supported from launch. The per-department `AcademicYear` table is
+  replaced by five shared `AcademicLevel` rows; new `AcademicProgram` and `ProgramLevel` tables;
+  `Syllabus` now belongs to one university, program, level and session (composite foreign keys keep
+  them consistent). New migration `20261122100000_multi_university_levels` (the first migration is
+  unchanged). API: `/academic-years` replaced by `/academic-levels`; new `/academic-programs`;
+  syllabus filters changed. Verification now requires an official university source document.
+  `CLAUDE.md`, SRS, master document, database docs and ADR 0003 updated.
+- `academic-content/syllabus/` reorganised to `<university>/<session>/<program>/<level>`; the DU
+  folder holds only a README.
+
 ### Added
 
 - GitHub Actions CI (quality checks + migration/schema drift check); VS Code and Codespaces dev

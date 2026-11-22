@@ -135,7 +135,7 @@ workflow (`GITHUB_PAGES=true`); normal `pnpm dev:web` / `pnpm build` are unchang
 
 ## Foundation scope and known limitations
 
-- The database currently holds only the academic-structure tables (Module 1) and they are **empty**: no university, session or syllabus data has been loaded. Verified NU data must come from the official source document.
+- The database currently holds only the academic-structure tables (Module 1) and they are **empty**: no university, program, session or syllabus data has been loaded (only the five shared academic levels exist). Verified NU and DU data must each come from that university's official source document.
 - Firebase Authentication/Storage, the AI/RAG assistant, server-side authorization and the content
   workflow (Draft -> Academic Review -> Approval -> Publication) are not implemented.
 - Bangla strings in the placeholder screens are unreviewed and must be checked by an academic or

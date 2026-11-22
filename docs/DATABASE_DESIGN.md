@@ -1,16 +1,29 @@
 # Database Design
 
 Diagram: [`database/documentation/ERD.md`](../database/documentation/ERD.md). Conventions:
-[`DATABASE_RULES.md`](../database/documentation/DATABASE_RULES.md). Decision record:
-[`docs/adr/0002-academic-structure.md`](./adr/0002-academic-structure.md).
+[`DATABASE_RULES.md`](../database/documentation/DATABASE_RULES.md). Decision records:
+[`adr/0002`](./adr/0002-academic-structure.md) (partly superseded) and
+[`adr/0003`](./adr/0003-multi-university-shared-levels.md).
 
-## Implemented (Module 1 - Academic structure)
+## Implemented (Module 1 - Academic structure, multi-university)
 
-`University`, `Department`, `AcademicYear` (Honours Year 1-4), `AcademicSession`, `Syllabus`,
-`SyllabusSource`, `SyllabusVerification`. Migration: `20261120213500_academic_structure`.
+`University`, `Department`, `AcademicProgram`, `AcademicLevel` (shared), `ProgramLevel`,
+`AcademicSession`, `Syllabus` (a syllabus version), `SyllabusSource`, `SyllabusVerification`.
+Migrations: `20261120213500_academic_structure`, `20261122100000_multi_university_levels`.
+
+- `AcademicLevel` is global: five rows (`HONOURS_1`..`HONOURS_4`, `MASTERS_1`) created by the
+  migration as reference data.
+- `AcademicProgram` belongs to a university and its department; `ProgramLevel` says which shared
+  levels the program offers.
+- `Syllabus` = university + program + level + session + version label. Composite foreign keys make
+  the database reject a program or session from another university, or a level the program does not
+  offer.
+- `SyllabusSource.sourceType` distinguishes `OFFICIAL_UNIVERSITY_DOCUMENT` from `OTHER`; only the
+  former counts toward verification.
 
 ## Not yet designed
 
-Courses, topics, authors, literary works, learning resources, content workflow (Draft -> Academic
-Review -> Approval -> Publication), question bank, users and progress. Each is designed when its
-module is approved.
+Courses (titles, codes, credits, marks), topics, authors, literary works, learning resources,
+content workflow (Draft -> Academic Review -> Approval -> Publication), question bank, users and
+student academic identity, progress. Each is designed when its module is approved. Courses will
+attach to `Syllabus`, so they inherit the university.

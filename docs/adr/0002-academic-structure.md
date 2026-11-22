@@ -1,6 +1,6 @@
 # ADR 0002 - Academic structure model (Module 1)
 
-- Status: **Proposed - awaiting owner approval**
+- Status: **Partly superseded by [ADR 0003](./0003-multi-university-shared-levels.md)** (the `AcademicYear` table and the year-based syllabus key; the rest still holds)
 - Date: 2026-11-20
 
 ## Decision

@@ -1,15 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class AcademicYearDto {
+export class AcademicLevelDto {
   @ApiProperty({ type: String }) id!: string;
-  @ApiProperty({ type: String }) departmentId!: string;
-  @ApiProperty({
-    type: Number,
-    minimum: 1,
-    maximum: 4,
-    description: '1 = First Year ... 4 = Fourth Year',
-  })
-  yearNumber!: number;
+  @ApiProperty({ type: String, example: 'HONOURS_1' }) code!: string;
+  @ApiProperty({ type: Number, minimum: 1, description: 'Display order across all levels.' })
+  sequence!: number;
   @ApiProperty({ type: String }) nameEn!: string;
   @ApiProperty({ type: String, nullable: true }) nameBn!: string | null;
   @ApiProperty({ type: String, format: 'date-time' }) createdAt!: Date;

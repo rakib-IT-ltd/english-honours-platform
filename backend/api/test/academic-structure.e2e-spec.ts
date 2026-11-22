@@ -31,7 +31,8 @@ describe('Academic structure (e2e, database stubbed)', () => {
       .useValue({
         university: model([university]),
         department: model([]),
-        academicYear: model([]),
+        academicLevel: model([]),
+        academicProgram: model([]),
         academicSession: model([]),
         syllabus: model([]),
         $disconnect: () => Promise.resolve(),
@@ -47,14 +48,18 @@ describe('Academic structure (e2e, database stubbed)', () => {
     await app.close();
   });
 
-  it.each(['universities', 'departments', 'academic-years', 'academic-sessions', 'syllabuses'])(
-    'GET /%s returns a JSON array',
-    async (path) => {
-      const res = await fetch(`${baseUrl}/api/v1/${path}`);
-      expect(res.status).toBe(200);
-      expect(Array.isArray(await res.json())).toBe(true);
-    },
-  );
+  it.each([
+    'universities',
+    'departments',
+    'academic-programs',
+    'academic-levels',
+    'academic-sessions',
+    'syllabuses',
+  ])('GET /%s returns a JSON array', async (path) => {
+    const res = await fetch(`${baseUrl}/api/v1/${path}`);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(await res.json())).toBe(true);
+  });
 
   it('GET /universities/:id returns the row, and 404 for an unknown id', async () => {
     const ok = await fetch(`${baseUrl}/api/v1/universities/u1`);
@@ -63,20 +68,25 @@ describe('Academic structure (e2e, database stubbed)', () => {
     expect((await fetch(`${baseUrl}/api/v1/universities/missing`)).status).toBe(404);
   });
 
-  it.each(['departments', 'academic-years', 'academic-sessions', 'syllabuses'])(
-    'GET /%s/:id returns 404 for an unknown id',
-    async (path) => {
-      expect((await fetch(`${baseUrl}/api/v1/${path}/missing`)).status).toBe(404);
-    },
-  );
+  it.each([
+    'departments',
+    'academic-programs',
+    'academic-levels',
+    'academic-sessions',
+    'syllabuses',
+  ])('GET /%s/:id returns 404 for an unknown id', async (path) => {
+    expect((await fetch(`${baseUrl}/api/v1/${path}/missing`)).status).toBe(404);
+  });
 
   it('exposes no write routes until authentication/authorization exists', async () => {
     const res = await fetch(`${baseUrl}/api/docs-json`);
     const doc = (await res.json()) as { paths: Record<string, Record<string, unknown>> };
     const academicPaths = Object.entries(doc.paths).filter(([p]) =>
-      /\/(universities|departments|academic-years|academic-sessions|syllabuses)/.test(p),
+      /\/(universities|departments|academic-programs|academic-levels|academic-sessions|syllabuses)/.test(
+        p,
+      ),
     );
-    expect(academicPaths.length).toBeGreaterThanOrEqual(10);
+    expect(academicPaths.length).toBeGreaterThanOrEqual(12);
     for (const [, operations] of academicPaths) {
       expect(Object.keys(operations)).toEqual(['get']);
     }

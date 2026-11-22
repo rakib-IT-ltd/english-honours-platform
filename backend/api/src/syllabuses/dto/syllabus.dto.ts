@@ -1,9 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { VERIFICATION_STATUSES } from '@ehp/shared-types';
+import { SYLLABUS_SOURCE_TYPES, VERIFICATION_STATUSES } from '@ehp/shared-types';
 
 export class SyllabusSourceDto {
   @ApiProperty({ type: String }) id!: string;
   @ApiProperty({ type: String }) syllabusId!: string;
+  @ApiProperty({
+    enum: SYLLABUS_SOURCE_TYPES,
+    description: 'Only official university documents can support verification.',
+  })
+  sourceType!: (typeof SYLLABUS_SOURCE_TYPES)[number];
   @ApiProperty({ type: String }) title!: string;
   @ApiProperty({ type: String }) issuingBody!: string;
   @ApiProperty({ type: String, description: 'Path under academic-content/ or a URL.' })
@@ -23,8 +28,10 @@ export class SyllabusVerificationDto {
 
 export class SyllabusDto {
   @ApiProperty({ type: String }) id!: string;
+  @ApiProperty({ type: String }) universityId!: string;
+  @ApiProperty({ type: String }) academicProgramId!: string;
+  @ApiProperty({ type: String, description: 'Shared academic level.' }) academicLevelId!: string;
   @ApiProperty({ type: String }) academicSessionId!: string;
-  @ApiProperty({ type: String }) academicYearId!: string;
   @ApiProperty({ type: String }) versionLabel!: string;
   @ApiProperty({
     enum: VERIFICATION_STATUSES,

@@ -100,18 +100,39 @@ describe('SyllabusesService reads', () => {
     await expect(service.findOne('x')).rejects.toBeInstanceOf(NotFoundException);
   });
 
-  it('findAll filters by department through the academic year', async () => {
+  it('findAll filters by university, program, level and session', async () => {
     const findMany = vi.fn().mockResolvedValue([]);
     const service = new SyllabusesService({ syllabus: { findMany } } as unknown as PrismaService);
-    await service.findAll({ departmentId: 'd1', academicSessionId: 's1' });
+    await service.findAll({
+      universityId: 'u1',
+      academicProgramId: 'p1',
+      academicLevelId: 'l1',
+      academicSessionId: 's1',
+    });
     expect(findMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: {
+          universityId: 'u1',
+          academicProgramId: 'p1',
+          academicLevelId: 'l1',
           academicSessionId: 's1',
-          academicYearId: undefined,
-          academicYear: { departmentId: 'd1' },
         },
       }),
     );
+  });
+});
+
+describe('SyllabusesService.verify source rule', () => {
+  it('counts only official university documents', async () => {
+    const { service, tx } = setup();
+    await service.verify('s1', { verifiedBy: 'Reviewer' });
+    expect(tx.syllabus.findUnique).toHaveBeenCalledWith({
+      where: { id: 's1' },
+      include: {
+        _count: {
+          select: { sources: { where: { sourceType: 'OFFICIAL_UNIVERSITY_DOCUMENT' } } },
+        },
+      },
+    });
   });
 });

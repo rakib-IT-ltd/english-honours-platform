@@ -7,7 +7,7 @@ Your responsibility is to develop a professional, scalable academic learning pla
 
 ### 1. Project vision
 
-Build a bilingual academic ecosystem initially targeting National University (NU), Bangladesh, with future expansion to other universities.
+Build a bilingual academic ecosystem supporting National University (NU) and the University of Dhaka (DU), Bangladesh, from launch, and designed so further Bangladeshi universities can be added without major architectural change.
 
 The platform consists of:
 - Android application
@@ -35,17 +35,26 @@ Use stable, compatible versions of dependencies.
 ### 3. Academic requirements
 
 The platform must support:
-- English Honours First Year
-- English Honours Second Year
-- English Honours Third Year
-- English Honours Fourth Year
-- Multiple universities
-- Multiple academic sessions
-- Multiple syllabus versions
+- Multiple universities, supported from launch: National University (NU) and University of Dhaka (DU)
+- Multiple academic sessions per university
+- Multiple syllabus versions per university
 
-Initial institution: National University, Bangladesh.
+Shared academic levels (one common list, not duplicated per university):
+1. Honours 1st Year
+2. Honours 2nd Year
+3. Honours 3rd Year
+4. Honours 4th Year
+5. Masters 1st Year
 
-The official NU First Year syllabus for session 2024–2025 is our initial verified academic baseline.
+University-specific (never assumed identical between universities): academic programs, academic sessions, syllabus versions, course titles, course codes, credit hours, marks and assessment structures, syllabus content.
+
+Model: University → Academic Program → Academic Level → Syllabus Version → Courses → Topics → Learning Materials. Academic levels are reusable; programs, sessions, syllabus versions and courses belong to one university.
+
+A student's academic identity is: university, academic program, academic level and applicable academic session.
+
+Never hardcode NU (or DU) assumptions in shared frontend or backend code. Do not assume NU and DU courses, credits or syllabus content are the same.
+
+The official NU First Year syllabus for session 2024–2025 is our initial verified academic baseline. No DU syllabus or course information is verified until an official DU document is recorded as a source with a verification record; DU data is never inferred from NU.
 
 IMPORTANT:
 Never invent syllabus information.

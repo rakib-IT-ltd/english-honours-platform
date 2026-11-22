@@ -15,17 +15,26 @@ export class SyllabusesController {
   constructor(private readonly syllabuses: SyllabusesService) {}
 
   @Get()
-  @ApiOperation({ summary: 'List syllabuses (each is one year of one session in one version)' })
+  @ApiOperation({
+    summary: 'List syllabus versions (one program + level + session of one university)',
+  })
+  @ApiQuery({ name: 'universityId', required: false })
+  @ApiQuery({ name: 'academicProgramId', required: false })
+  @ApiQuery({ name: 'academicLevelId', required: false })
   @ApiQuery({ name: 'academicSessionId', required: false })
-  @ApiQuery({ name: 'academicYearId', required: false })
-  @ApiQuery({ name: 'departmentId', required: false })
   @ApiOkResponse({ type: SyllabusDto, isArray: true })
   findAll(
+    @Query('universityId') universityId?: string,
+    @Query('academicProgramId') academicProgramId?: string,
+    @Query('academicLevelId') academicLevelId?: string,
     @Query('academicSessionId') academicSessionId?: string,
-    @Query('academicYearId') academicYearId?: string,
-    @Query('departmentId') departmentId?: string,
   ) {
-    return this.syllabuses.findAll({ academicSessionId, academicYearId, departmentId });
+    return this.syllabuses.findAll({
+      universityId,
+      academicProgramId,
+      academicLevelId,
+      academicSessionId,
+    });
   }
 
   @Get(':id')

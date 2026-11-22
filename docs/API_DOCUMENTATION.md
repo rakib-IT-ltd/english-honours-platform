@@ -6,13 +6,16 @@
 - `GET /health` (liveness), `GET /health/ready` (readiness, checks PostgreSQL).
 - Academic structure (read-only; write endpoints wait for authentication/authorization):
 
-| Endpoint                                            | Filters                                               |
-| --------------------------------------------------- | ----------------------------------------------------- |
-| `GET /universities`, `/universities/{id}`           | -                                                     |
-| `GET /departments`, `/departments/{id}`             | `universityId`                                        |
-| `GET /academic-years`, `/academic-years/{id}`       | `departmentId`                                        |
-| `GET /academic-sessions`, `/academic-sessions/{id}` | `universityId`                                        |
-| `GET /syllabuses`, `/syllabuses/{id}`               | `academicSessionId`, `academicYearId`, `departmentId` |
+| Endpoint                                            | Filters                                                                     |
+| --------------------------------------------------- | --------------------------------------------------------------------------- |
+| `GET /universities`, `/universities/{id}`           | -                                                                           |
+| `GET /departments`, `/departments/{id}`             | `universityId`                                                              |
+| `GET /academic-programs`, `/academic-programs/{id}` | `universityId`, `programmeType` (`HONOURS`, `MASTERS`)                      |
+| `GET /academic-levels`, `/academic-levels/{id}`     | `academicProgramId` (levels are shared by all universities)                 |
+| `GET /academic-sessions`, `/academic-sessions/{id}` | `universityId`                                                              |
+| `GET /syllabuses`, `/syllabuses/{id}`               | `universityId`, `academicProgramId`, `academicLevelId`, `academicSessionId` |
+
+`/academic-programs/{id}` includes the shared `levels` the program offers, in order.
 
 `/syllabuses/{id}` includes `sources` and `verifications`. Unknown ids return 404. Tables are empty
 until verified data is loaded.
