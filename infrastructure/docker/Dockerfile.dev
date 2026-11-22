@@ -1,0 +1,9 @@
+# Development image shared by the API and web services.
+# The repository is bind-mounted at /workspace by compose; this image only supplies Node + pnpm.
+# Not intended for production (a separate, multi-stage production Dockerfile is a later phase).
+FROM node:22-bookworm-slim
+
+# Pin pnpm to the version declared in the root package.json ("packageManager").
+RUN corepack enable && corepack prepare pnpm@10.28.0 --activate
+
+WORKDIR /workspace

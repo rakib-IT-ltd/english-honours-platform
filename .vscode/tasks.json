@@ -1,0 +1,55 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Database: start (Docker Compose)",
+      "type": "shell",
+      "command": "docker compose up -d postgres",
+      "problemMatcher": []
+    },
+    {
+      "label": "Database: apply migrations",
+      "type": "shell",
+      "command": "pnpm db:migrate:deploy",
+      "problemMatcher": []
+    },
+    {
+      "label": "API: dev server (http://localhost:3001/api/docs)",
+      "type": "shell",
+      "command": "pnpm dev:api",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": { "panel": "dedicated", "group": "dev" }
+    },
+    {
+      "label": "Web: dev server (http://localhost:3000)",
+      "type": "shell",
+      "command": "pnpm dev:web",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": { "panel": "dedicated", "group": "dev" }
+    },
+    {
+      "label": "Dev: API + Web",
+      "dependsOn": [
+        "API: dev server (http://localhost:3001/api/docs)",
+        "Web: dev server (http://localhost:3000)"
+      ],
+      "dependsOrder": "parallel",
+      "problemMatcher": []
+    },
+    {
+      "label": "Test: all",
+      "type": "shell",
+      "command": "pnpm test && pnpm --filter @ehp/api test:e2e",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Check: format, lint, typecheck",
+      "type": "shell",
+      "command": "pnpm format:check && pnpm lint && pnpm typecheck",
+      "problemMatcher": []
+    }
+  ]
+}

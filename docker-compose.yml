@@ -1,0 +1,86 @@
+# Development stack. Compose reads the git-ignored `.env` next to this file
+# (create it with: cp .env.example .env, then set POSTGRES_PASSWORD).
+#
+#   Database only (typical: apps run on the host with hot reload):
+#     docker compose up -d postgres
+#
+#   Whole stack in containers (API + web):
+#     docker compose --profile apps up
+#
+name: ehp-dev
+
+services:
+  postgres:
+    image: postgres:16-bookworm
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-ehp}
+      POSTGRES_DB: ${POSTGRES_DB:-ehp_dev}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env (copy .env.example)}
+    ports:
+      - '127.0.0.1:${POSTGRES_PORT:-5432}:5432'
+    volumes:
+      - ehp-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # One-shot: installs workspace dependencies into named volumes (so host and container
+  # node_modules never mix) and builds @ehp/shared-types. api and web wait for it to finish.
+  deps:
+    profiles: [apps]
+    build: &node-dev
+      context: infrastructure/docker
+      dockerfile: Dockerfile.dev
+    working_dir: /workspace
+    volumes: &workspace-volumes
+      - .:/workspace
+      - ehp-node-modules-root:/workspace/node_modules
+      - ehp-node-modules-api:/workspace/backend/api/node_modules
+      - ehp-node-modules-web:/workspace/apps/web/node_modules
+      - ehp-node-modules-shared:/workspace/packages/shared-types/node_modules
+      - ehp-pnpm-store:/root/.local/share/pnpm
+    command: sh -c "pnpm install --frozen-lockfile && pnpm --filter @ehp/shared-types build"
+
+  api:
+    profiles: [apps]
+    build: *node-dev
+    working_dir: /workspace
+    depends_on:
+      deps:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      PORT: '3001'
+      DATABASE_URL: postgresql://${POSTGRES_USER:-ehp}:${POSTGRES_PASSWORD:?}@postgres:5432/${POSTGRES_DB:-ehp_dev}?schema=public
+      CORS_ORIGINS: http://localhost:${WEB_PORT:-3000}
+    ports:
+      - '${API_PORT:-3001}:3001'
+    volumes: *workspace-volumes
+    command: pnpm --filter @ehp/api start:dev
+
+  web:
+    profiles: [apps]
+    build: *node-dev
+    working_dir: /workspace
+    depends_on:
+      deps:
+        condition: service_completed_successfully
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:${API_PORT:-3001}/api/v1
+    ports:
+      - '${WEB_PORT:-3000}:3000'
+    volumes: *workspace-volumes
+    command: pnpm --filter @ehp/web exec next dev --hostname 0.0.0.0 --port 3000
+
+volumes:
+  ehp-postgres-data:
+  ehp-node-modules-root:
+  ehp-node-modules-api:
+  ehp-node-modules-web:
+  ehp-node-modules-shared:
+  ehp-pnpm-store:

@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "oxc.oxc-vscode",
+    "Prisma.prisma",
+    "vitest.explorer",
+    "Dart-Code.flutter",
+    "ms-azuretools.vscode-docker"
+  ]
+}

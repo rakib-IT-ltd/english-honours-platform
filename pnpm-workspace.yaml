@@ -1,0 +1,11 @@
+packages:
+  - 'apps/*'
+  - 'backend/*'
+  - 'packages/*'
+
+# pnpm 10 blocks dependency install scripts unless approved here.
+onlyBuiltDependencies:
+  - '@prisma/engines'
+  - prisma
+  - esbuild
+  - sharp

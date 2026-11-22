@@ -1,0 +1,142 @@
+// Prisma schema.
+//
+// Module 1 - Academic structure: universities, departments, academic years, academic sessions,
+// syllabuses and their source/verification records. Further models (courses, content, users, ...)
+// are added module by module after approval of each phase.
+// The connection URL is supplied by prisma.config.ts (Prisma 7) from DATABASE_URL.
+//
+// Rules enforced OUTSIDE this file (see database/documentation/DATABASE_RULES.md):
+//  - AcademicYear.yearNumber is CHECKed to 1..4 and AcademicSession.endYear >= startYear in the SQL
+//    migration (Prisma cannot express CHECK constraints).
+//  - A Syllabus's session and academic year must belong to the same university; verified by the
+//    service that writes syllabuses.
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../../backend/api/src/generated/prisma"
+  moduleFormat = "esm"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// Whether a syllabus has been checked against an official source document.
+/// Nothing is VERIFIED unless a SyllabusVerification record exists (enforced in the service).
+enum VerificationStatus {
+  UNVERIFIED
+  VERIFIED
+}
+
+model University {
+  id        String   @id @default(uuid())
+  /// Short stable identifier used in code and imports (unique).
+  code      String   @unique
+  nameEn    String
+  /// Bangla name; optional so unreviewed Bangla text is never forced in.
+  nameBn    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  departments      Department[]
+  academicSessions AcademicSession[]
+}
+
+model Department {
+  id           String   @id @default(uuid())
+  universityId String
+  code         String
+  nameEn       String
+  nameBn       String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  university    University     @relation(fields: [universityId], references: [id])
+  academicYears AcademicYear[]
+
+  @@unique([universityId, code])
+}
+
+/// A year of the Honours programme of a department (1 = First Year ... 4 = Fourth Year).
+model AcademicYear {
+  id           String   @id @default(uuid())
+  departmentId String
+  yearNumber   Int
+  nameEn       String
+  nameBn       String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  department Department @relation(fields: [departmentId], references: [id])
+  syllabuses Syllabus[]
+
+  @@unique([departmentId, yearNumber])
+}
+
+/// A university's academic session, e.g. label "2024-2025".
+model AcademicSession {
+  id           String   @id @default(uuid())
+  universityId String
+  label        String
+  startYear    Int
+  endYear      Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  university University @relation(fields: [universityId], references: [id])
+  syllabuses Syllabus[]
+
+  @@unique([universityId, label])
+}
+
+/// The syllabus of ONE academic year in ONE session, in a given version.
+model Syllabus {
+  id                 String             @id @default(uuid())
+  academicSessionId  String
+  academicYearId     String
+  versionLabel       String
+  verificationStatus VerificationStatus @default(UNVERIFIED)
+  notes              String?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  academicSession AcademicSession        @relation(fields: [academicSessionId], references: [id])
+  academicYear    AcademicYear           @relation(fields: [academicYearId], references: [id])
+  sources         SyllabusSource[]
+  verifications   SyllabusVerification[]
+
+  @@unique([academicSessionId, academicYearId, versionLabel])
+  @@index([academicYearId])
+}
+
+/// An official source document a syllabus was taken from.
+model SyllabusSource {
+  id          String    @id @default(uuid())
+  syllabusId  String
+  title       String
+  issuingBody String
+  /// Path under academic-content/ or a URL to the original document.
+  documentRef String
+  publishedOn DateTime? @db.Date
+  /// SHA-256 of the stored document, to detect later changes.
+  sha256      String?
+  createdAt   DateTime  @default(now())
+
+  syllabus Syllabus @relation(fields: [syllabusId], references: [id])
+
+  @@index([syllabusId])
+}
+
+/// Append-only record that someone checked a syllabus against its source.
+model SyllabusVerification {
+  id         String   @id @default(uuid())
+  syllabusId String
+  /// Reviewer's name/identifier. Becomes a user reference once the users module exists.
+  verifiedBy String
+  note       String?
+  verifiedAt DateTime @default(now())
+
+  syllabus Syllabus @relation(fields: [syllabusId], references: [id])
+
+  @@index([syllabusId])
+}

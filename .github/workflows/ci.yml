@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Least privilege: the workflow only reads the repository.
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Format, lint, typecheck, test, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      # pnpm version comes from "packageManager" in package.json
+      - run: corepack enable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      # Also runs `prisma generate` (postinstall)
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm format:check
+      - run: pnpm lint
+      - run: pnpm --filter @ehp/shared-types build
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm --filter @ehp/api test:e2e
+      - run: pnpm build
+
+  database:
+    name: Migrations match schema.prisma
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16-bookworm
+        env:
+          POSTGRES_USER: ehp
+          POSTGRES_DB: ehp_ci
+          # Throwaway CI database inside the job network: trust auth, no password stored.
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ehp -d ehp_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://ehp@localhost:5432/ehp_ci?schema=public
+    steps:
+      - uses: actions/checkout@v4
+      - run: corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Apply committed migrations
+        run: pnpm db:migrate:deploy
+
+      # Exit code 2 means the migrated database differs from schema.prisma: a migration is missing
+      # or was edited. (CHECK constraints are not modelled by Prisma and are ignored.)
+      - name: Fail if migrations and schema.prisma have drifted
+        working-directory: backend/api
+        run: pnpm exec prisma migrate diff --from-config-datasource --to-schema ../../database/prisma/schema.prisma --exit-code

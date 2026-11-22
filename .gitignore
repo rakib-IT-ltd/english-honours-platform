@@ -1,0 +1,52 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# build output
+dist/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# generated code
+backend/api/src/generated/
+
+# secrets & local env (only *.example files are committed)
+.env
+.env.*
+!.env.example
+
+# logs / OS / editor
+*.log
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+
+# Flutter / Dart
+apps/mobile/.dart_tool/
+apps/mobile/.flutter-plugins*
+apps/mobile/build/
+apps/mobile/.packages
+apps/mobile/android/local.properties
+apps/mobile/android/.gradle/
+apps/mobile/android/key.properties
+apps/mobile/android/app/google-services.json
+*.jks
+*.keystore
+
+# Firebase service accounts
+*service-account*.json
+*firebase-adminsdk*.json
+
+# Local per-developer files (only *.example* templates are committed)
+apps/mobile/env.json
+
+# Database backups may contain real data: never commit them
+database/backups/*
+!database/backups/.gitkeep
+*.dump
