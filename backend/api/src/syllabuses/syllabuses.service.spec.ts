@@ -108,6 +108,7 @@ describe('SyllabusesService reads', () => {
       academicProgramId: 'p1',
       academicLevelId: 'l1',
       academicSessionId: 's1',
+      isCurrent: true,
     });
     expect(findMany).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -116,6 +117,7 @@ describe('SyllabusesService reads', () => {
           academicProgramId: 'p1',
           academicLevelId: 'l1',
           academicSessionId: 's1',
+          isCurrent: true,
         },
       }),
     );

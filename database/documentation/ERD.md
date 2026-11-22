@@ -23,7 +23,7 @@ erDiagram
   AcademicProgram { string id PK  string universityId FK  string departmentId FK  string code  enum programmeType "HONOURS | MASTERS"  string nameEn  string nameBn "nullable" }
   ProgramLevel { string programId PK,FK  string levelId PK,FK }
   AcademicSession { string id PK  string universityId FK  string label  int startYear  int endYear }
-  Syllabus { string id PK  string universityId FK  string academicProgramId FK  string academicLevelId FK  string academicSessionId FK  string versionLabel  enum verificationStatus "UNVERIFIED | VERIFIED" }
+  Syllabus { string id PK  string universityId FK  string academicProgramId FK  string academicLevelId FK  string academicSessionId FK  string versionLabel  enum verificationStatus "UNVERIFIED | VERIFIED"  boolean isCurrent }
   SyllabusSource { string id PK  string syllabusId FK  enum sourceType "OFFICIAL_UNIVERSITY_DOCUMENT | OTHER"  string title  string issuingBody  string documentRef  date publishedOn "nullable"  string sha256 "nullable" }
   SyllabusVerification { string id PK  string syllabusId FK  string verifiedBy  string note "nullable"  datetime verifiedAt }
 ```

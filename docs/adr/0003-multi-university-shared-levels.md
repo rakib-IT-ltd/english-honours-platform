@@ -7,7 +7,7 @@
 ## Context
 
 NU and DU are both supported from launch. Both use the same five levels (Honours 1st-4th Year,
-Masters 1st Year) but differ in course titles, codes, credits, marks, content, sessions and syllabus
+Masters Final) but differ in course titles, codes, credits, marks, content, sessions and syllabus
 versions. ADR 0002 modelled years per department, which implied NU-style Honours years only.
 
 ## Decision
@@ -38,8 +38,8 @@ versions. ADR 0002 modelled years per department, which implied NU-style Honours
 
 ## To confirm with the owner
 
-- Masters level: English name "Masters 1st Year" (clarification) vs Bangla "মাস্টার্স ফাইনাল"
-  (later answer). Both are stored as given; code `MASTERS_1`.
+- Masters level: the owner chose "Masters Final" (Bangla "মাস্টার্স ফাইনাল"), code `MASTERS_FINAL`
+  (migration `20261122120000_masters_final_level`).
 - Bangla names of the levels and of "Department of English" are unreviewed (Bangla department name
   not supplied; `nameBn` is empty).
-- A flag marking the current syllabus version per program/level/session was not added.
+- The owner asked for a current-version flag: `Syllabus.isCurrent`, one per program/level/session.

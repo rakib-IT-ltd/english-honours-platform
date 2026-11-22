@@ -11,7 +11,7 @@ Diagram: [`database/documentation/ERD.md`](../database/documentation/ERD.md). Co
 `AcademicSession`, `Syllabus` (a syllabus version), `SyllabusSource`, `SyllabusVerification`.
 Migrations: `20261120213500_academic_structure`, `20261122100000_multi_university_levels`.
 
-- `AcademicLevel` is global: five rows (`HONOURS_1`..`HONOURS_4`, `MASTERS_1`) created by the
+- `AcademicLevel` is global: five rows (`HONOURS_1`..`HONOURS_4`, `MASTERS_FINAL`) created by the
   migration as reference data.
 - `AcademicProgram` belongs to a university and its department; `ProgramLevel` says which shared
   levels the program offers.

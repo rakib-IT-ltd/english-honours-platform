@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { BadRequestException, Controller, Get, Param, Query } from '@nestjs/common';
 import {
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -22,18 +22,24 @@ export class SyllabusesController {
   @ApiQuery({ name: 'academicProgramId', required: false })
   @ApiQuery({ name: 'academicLevelId', required: false })
   @ApiQuery({ name: 'academicSessionId', required: false })
+  @ApiQuery({ name: 'isCurrent', required: false, type: Boolean })
   @ApiOkResponse({ type: SyllabusDto, isArray: true })
   findAll(
     @Query('universityId') universityId?: string,
     @Query('academicProgramId') academicProgramId?: string,
     @Query('academicLevelId') academicLevelId?: string,
     @Query('academicSessionId') academicSessionId?: string,
+    @Query('isCurrent') isCurrent?: string,
   ) {
+    if (isCurrent !== undefined && isCurrent !== 'true' && isCurrent !== 'false') {
+      throw new BadRequestException('isCurrent must be true or false');
+    }
     return this.syllabuses.findAll({
       universityId,
       academicProgramId,
       academicLevelId,
       academicSessionId,
+      isCurrent: isCurrent === undefined ? undefined : isCurrent === 'true',
     });
   }
 

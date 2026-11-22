@@ -39,6 +39,11 @@ export class SyllabusDto {
   })
   verificationStatus!: (typeof VERIFICATION_STATUSES)[number];
   @ApiProperty({ type: String, nullable: true }) notes!: string | null;
+  @ApiProperty({
+    type: Boolean,
+    description: 'The version shown to students for this program, level and session.',
+  })
+  isCurrent!: boolean;
   @ApiProperty({ type: String, format: 'date-time' }) createdAt!: Date;
   @ApiProperty({ type: String, format: 'date-time' }) updatedAt!: Date;
 }

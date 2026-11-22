@@ -44,7 +44,7 @@ Shared academic levels (one common list, not duplicated per university):
 2. Honours 2nd Year
 3. Honours 3rd Year
 4. Honours 4th Year
-5. Masters 1st Year
+5. Masters Final
 
 University-specific (never assumed identical between universities): academic programs, academic sessions, syllabus versions, course titles, course codes, credit hours, marks and assessment structures, syllabus content.
 

@@ -12,7 +12,7 @@ not NU-only, and further Bangladeshi universities must be addable without major 
 
 `University -> Academic Program -> Academic Level -> Syllabus Version -> Courses -> Topics -> Learning Materials`
 
-- **Shared:** five academic levels - Honours 1st, 2nd, 3rd, 4th Year and Masters 1st Year. They exist
+- **Shared:** five academic levels - Honours 1st, 2nd, 3rd, 4th Year and Masters Final. They exist
   once and are reused by every university.
 - **University-specific:** programs (e.g. English Honours, 4 years; English Masters, 1 year), academic
   sessions, syllabus versions, course titles, course codes, credit hours, marks and assessment

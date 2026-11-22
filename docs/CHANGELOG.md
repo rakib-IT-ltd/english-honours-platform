@@ -11,10 +11,15 @@
   unchanged). API: `/academic-years` replaced by `/academic-levels`; new `/academic-programs`;
   syllabus filters changed. Verification now requires an official university source document.
   `CLAUDE.md`, SRS, master document, database docs and ADR 0003 updated.
+- Fifth shared level renamed to "Masters Final" (code `MASTERS_FINAL`) via a new migration.
 - `academic-content/syllabus/` reorganised to `<university>/<session>/<program>/<level>`; the DU
   folder holds only a README.
 
 ### Added
+
+- `Syllabus.isCurrent` flag (migration `20261122130000_current_syllabus_version`): at most one current
+  version per program, level and session (partial unique index); `GET /syllabuses?isCurrent=true`.
+  Setting it is a write operation and waits for the admin module.
 
 - GitHub Actions CI (quality checks + migration/schema drift check); VS Code and Codespaces dev
   container configuration.

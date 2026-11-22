@@ -14,7 +14,7 @@ must be addable without major architectural change.
 | ID    | Requirement                                                                                                                                                                   |
 | ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | AC-1  | The system supports several universities at once (NU and DU at launch).                                                                                                       |
-| AC-2  | There are exactly five shared academic levels: Honours 1st, 2nd, 3rd, 4th Year and Masters 1st Year. They are stored once and reused by all universities.                     |
+| AC-2  | There are exactly five shared academic levels: Honours 1st, 2nd, 3rd, 4th Year and Masters Final. They are stored once and reused by all universities.                        |
 | AC-3  | Each university has its own academic programs (English Honours, 4 years; English Masters, 1 year), academic sessions and syllabus versions.                                   |
 | AC-4  | A syllabus version belongs to one university, one program, one level and one session. The database rejects a mix of universities, and a level the program does not offer.     |
 | AC-5  | Course titles, course codes, credit hours, marks/assessment structures and content are university-specific. The system never assumes they are identical between universities. |

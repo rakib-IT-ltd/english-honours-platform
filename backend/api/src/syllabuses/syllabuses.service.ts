@@ -13,6 +13,8 @@ export interface SyllabusFilter {
   academicProgramId?: string;
   academicLevelId?: string;
   academicSessionId?: string;
+  /** true = only the current versions. */
+  isCurrent?: boolean;
 }
 
 export interface VerifySyllabusInput {
@@ -32,6 +34,7 @@ export class SyllabusesService {
         academicProgramId: filter.academicProgramId,
         academicLevelId: filter.academicLevelId,
         academicSessionId: filter.academicSessionId,
+        isCurrent: filter.isCurrent,
       },
       orderBy: [{ createdAt: 'desc' }],
     });

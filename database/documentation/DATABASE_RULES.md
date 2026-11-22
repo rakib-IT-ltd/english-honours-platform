@@ -28,3 +28,5 @@
   with `sourceType = OFFICIAL_UNIVERSITY_DOCUMENT` is required and a `SyllabusVerification` row is written in the same transaction.
 - Migrations are committed SQL. After editing `schema.prisma`, create migrations with
   `pnpm db:migrate`; never edit an applied migration.
+- At most one `Syllabus` per (program, level, session) may have `isCurrent = true`: a partial unique
+  index in the migration SQL (Prisma ignores it when diffing).
