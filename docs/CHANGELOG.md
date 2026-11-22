@@ -17,6 +17,11 @@
 
 ### Added
 
+- Website home page: bilingual (English first, Bangla switch) university -> program -> level
+  selector fed by the API, with honest empty/not-connected states and verification badge. No
+  university, course or syllabus is hardcoded; the static GitHub Pages preview shows the
+  "not connected" notice because it has no API.
+
 - `Syllabus.isCurrent` flag (migration `20261122130000_current_syllabus_version`): at most one current
   version per program, level and session (partial unique index); `GET /syllabuses?isCurrent=true`.
   Setting it is a write operation and waits for the admin module.
