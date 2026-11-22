@@ -117,6 +117,13 @@ flutter run --dart-define-from-file=env.json
 typecheck, unit and e2e tests and builds, plus a database job that applies the committed migrations
 to a PostgreSQL 16 service and fails if they differ from `schema.prisma`.
 
+## Website preview (GitHub Pages)
+
+`.github/workflows/pages.yml` publishes a **static preview** of `apps/web` (no API or database) to
+`https://<owner>.github.io/english-honours-platform/`. Enable it once under
+**Settings -> Pages -> Source: GitHub Actions**. The static export is switched on only by that
+workflow (`GITHUB_PAGES=true`); normal `pnpm dev:web` / `pnpm build` are unchanged.
+
 ## Configuration and secrets
 
 - The root and each app have a committed `*.example` template and a git-ignored real file. Only placeholders are
