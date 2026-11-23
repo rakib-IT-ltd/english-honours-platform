@@ -1,10 +1,14 @@
-import type { SupportedLanguage } from '@ehp/shared-types';
+'use client';
+
+import Link from 'next/link';
 import { STRINGS } from '../../lib/i18n';
+import { useLanguage } from '../providers/AppProviders';
 import { BrandMark } from './BrandMark';
 
 const REPOSITORY_URL = 'https://github.com/rakib-IT-ltd/english-honours-platform';
 
-export function SiteFooter({ language }: { language: SupportedLanguage }) {
+export function SiteFooter() {
+  const { language } = useLanguage();
   const t = STRINGS[language];
   return (
     <footer className="site-footer" id="contact">
@@ -17,9 +21,9 @@ export function SiteFooter({ language }: { language: SupportedLanguage }) {
           </span>
         </div>
         <nav aria-label="Footer" className="footer-nav">
-          <a href="#top">{t.navHome}</a>
-          <a href="#why">{t.navAbout}</a>
-          <a href="#next">{t.navHelp}</a>
+          <Link href="/">{t.navHome}</Link>
+          <Link href="/#why">{t.navAbout}</Link>
+          <Link href="/#next">{t.navHelp}</Link>
           <a href={REPOSITORY_URL} rel="noopener noreferrer">
             {t.github}
           </a>

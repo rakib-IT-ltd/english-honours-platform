@@ -475,3 +475,92 @@ button:focus-visible {
     align-items: flex-start;
   }
 }
+
+/* ---------- Account pages ---------- */
+a.pill-button {
+  text-decoration: none;
+  display: inline-block;
+}
+
+.signed-in-note {
+  max-width: 1160px;
+  margin: 1.2rem auto 0;
+  padding: 0.7rem 1rem;
+  background: var(--band);
+  border-radius: 10px;
+}
+
+.form-page {
+  max-width: 460px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 3rem;
+}
+
+.form-page.wide {
+  max-width: 1160px;
+}
+
+.form-page h1 {
+  font-size: 2rem;
+  margin: 0 0 0.5rem;
+}
+
+.auth-form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.2rem;
+}
+
+.auth-form .field input {
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+  font: inherit;
+  color: var(--text);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.field label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.primary-button {
+  background: var(--navy);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.7rem 1.4rem;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.form-error {
+  color: #a32020;
+  margin: 0;
+}
+
+.form-ok {
+  color: var(--ok);
+  margin: 0;
+}
+
+.form-switch {
+  margin-top: 1.5rem;
+}
+
+.profile-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 0.5rem 0 2.5rem;
+}

@@ -4,10 +4,11 @@
   "service": "app",
   "workspaceFolder": "/workspaces/english-honours-platform",
   "postCreateCommand": "sudo corepack enable && pnpm install && pnpm db:migrate:deploy",
-  "forwardPorts": [3000, 3001],
+  "forwardPorts": [3000, 3001, 9099],
   "portsAttributes": {
     "3000": { "label": "Web (Next.js)", "onAutoForward": "notify" },
-    "3001": { "label": "API (NestJS) - /api/docs", "onAutoForward": "notify" }
+    "3001": { "label": "API (NestJS) - /api/docs", "onAutoForward": "notify" },
+    "9099": { "label": "Firebase Auth Emulator", "onAutoForward": "silent" }
   },
   "customizations": {
     "vscode": {

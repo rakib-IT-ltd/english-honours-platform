@@ -7,6 +7,7 @@ import { AcademicProgramsModule } from './academic-programs/academic-programs.mo
 import { DepartmentsModule } from './departments/departments.module.js';
 import { HealthModule } from './health/health.module.js';
 import { SyllabusesModule } from './syllabuses/syllabuses.module.js';
+import { UsersModule } from './users/users.module.js';
 import { UniversitiesModule } from './universities/universities.module.js';
 import { PrismaModule } from './database/prisma.module.js';
 
@@ -26,6 +27,7 @@ import { PrismaModule } from './database/prisma.module.js';
     AcademicLevelsModule,
     AcademicSessionsModule,
     SyllabusesModule,
+    UsersModule,
   ],
 })
 export class AppModule {}

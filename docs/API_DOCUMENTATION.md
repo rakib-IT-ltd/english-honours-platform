@@ -19,3 +19,15 @@
 
 `/syllabuses/{id}` includes `sources` and `verifications`. Unknown ids return 404. Tables are empty
 until verified data is loaded.
+
+## Student account (requires `Authorization: Bearer <Firebase ID token>`)
+
+| Endpoint          | Purpose                                                                                   |
+| ----------------- | ----------------------------------------------------------------------------------------- |
+| `GET /me`         | Current user (created on first call) and academic profile, or `profile: null`             |
+| `PATCH /me`       | Update `displayName` and/or `preferredLanguage` (`en` or `bn`)                            |
+| `PUT /me/profile` | Save `universityId`, `academicProgramId`, `academicLevelId`, optional `academicSessionId` |
+
+Errors: 401 missing/invalid token, 503 token verification not configured on the server, 422 the
+program/level/session does not belong to the chosen university or the level is not offered by the
+program. Responses never contain the Firebase uid. Passwords are handled only by Firebase.

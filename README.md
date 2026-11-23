@@ -89,8 +89,10 @@ data). In a Codespace terminal, from the repository root:
 bash scripts/codespaces-dev.sh
 ```
 
-It migrates, seeds, points the website at the API's forwarded address, makes port 3001 public
-(development only) and starts both apps. Open the "Web (Next.js)" forwarded port 3000. To seed
+It migrates, seeds, starts the Firebase Auth Emulator (port 9099, no Firebase account needed),
+points the website at the API and the emulator, makes ports 3001 and 9099 public (development only)
+and starts both apps. Use **Create account** on the home page header (or `/register`), then choose
+your university, program, level and session on **My profile**. Emulator accounts are temporary. Open the "Web (Next.js)" forwarded port 3000. To seed
 without the script: `pnpm db:seed` (idempotent; refuses `NODE_ENV=production`).
 
 Run the whole stack in containers instead (API + web with hot reload):

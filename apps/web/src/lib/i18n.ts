@@ -49,6 +49,34 @@ export interface Strings {
   footerTagline: string;
   footerVerification: string;
   github: string;
+  signOut: string;
+  myProfile: string;
+  welcomeBack: string;
+  completeProfile: string;
+  editProfile: string;
+  signInTitle: string;
+  signUpTitle: string;
+  signUpLink: string;
+  signInLink: string;
+  email: string;
+  password: string;
+  passwordHint: string;
+  displayName: string;
+  working: string;
+  authNotConfigured: string;
+  errInvalidCredentials: string;
+  errEmailInUse: string;
+  errWeakPassword: string;
+  errNetwork: string;
+  errUnknown: string;
+  profileTitle: string;
+  profileIntro: string;
+  profileSave: string;
+  profileSaved: string;
+  profileSaveError: string;
+  profileNeedsSignIn: string;
+  profileNeedsApi: string;
+  backToHome: string;
 }
 
 // NOTE: Bangla wording is a first draft and must be reviewed by a language/academic reviewer.
@@ -115,6 +143,34 @@ export const STRINGS: Record<SupportedLanguage, Strings> = {
     footerVerification:
       'Every syllabus is checked against an official university document before it is marked as verified.',
     github: 'Project on GitHub',
+    signOut: 'Sign out',
+    myProfile: 'My profile',
+    welcomeBack: 'Signed in as',
+    completeProfile: 'Complete your profile to see your syllabus automatically.',
+    editProfile: 'Change my university and level',
+    signInTitle: 'Sign in',
+    signUpTitle: 'Create your account',
+    signUpLink: 'Create an account',
+    signInLink: 'I already have an account',
+    email: 'Email address',
+    password: 'Password',
+    passwordHint: 'At least 6 characters.',
+    displayName: 'Your name',
+    working: 'Please wait…',
+    authNotConfigured: 'Sign-in is not available in this preview yet.',
+    errInvalidCredentials: 'The email or password is not correct.',
+    errEmailInUse: 'An account with this email already exists.',
+    errWeakPassword: 'Please choose a stronger password (at least 6 characters).',
+    errNetwork: 'Could not reach the sign-in service. Please check your connection.',
+    errUnknown: 'Something went wrong. Please try again.',
+    profileTitle: 'Your academic identity',
+    profileIntro: 'Tell us where you study, so you always see the right syllabus.',
+    profileSave: 'Save my profile',
+    profileSaved: 'Your profile has been saved.',
+    profileSaveError: 'Could not save your profile. Please try again.',
+    profileNeedsSignIn: 'Please sign in to set up your profile.',
+    profileNeedsApi: 'The platform API is not connected, so profiles cannot be saved yet.',
+    backToHome: 'Back to home',
   },
   bn: {
     brand: 'ইংরেজি অনার্স',
@@ -177,5 +233,33 @@ export const STRINGS: Record<SupportedLanguage, Strings> = {
     footerVerification:
       'যাচাইকৃত হিসেবে চিহ্নিত করার আগে প্রতিটি সিলেবাস বিশ্ববিদ্যালয়ের অফিসিয়াল নথির সাথে মিলিয়ে দেখা হয়।',
     github: 'GitHub-এ প্রকল্প',
+    signOut: 'সাইন আউট',
+    myProfile: 'আমার প্রোফাইল',
+    welcomeBack: 'সাইন ইন করা আছে:',
+    completeProfile: 'আপনার সিলেবাস স্বয়ংক্রিয়ভাবে দেখতে প্রোফাইল সম্পূর্ণ করুন।',
+    editProfile: 'আমার বিশ্ববিদ্যালয় ও স্তর পরিবর্তন করুন',
+    signInTitle: 'সাইন ইন',
+    signUpTitle: 'আপনার অ্যাকাউন্ট তৈরি করুন',
+    signUpLink: 'অ্যাকাউন্ট তৈরি করুন',
+    signInLink: 'আমার অ্যাকাউন্ট আছে',
+    email: 'ইমেইল ঠিকানা',
+    password: 'পাসওয়ার্ড',
+    passwordHint: 'কমপক্ষে ৬টি অক্ষর।',
+    displayName: 'আপনার নাম',
+    working: 'অনুগ্রহ করে অপেক্ষা করুন…',
+    authNotConfigured: 'এই প্রিভিউতে এখনও সাইন ইন চালু নেই।',
+    errInvalidCredentials: 'ইমেইল বা পাসওয়ার্ড সঠিক নয়।',
+    errEmailInUse: 'এই ইমেইল দিয়ে আগেই একটি অ্যাকাউন্ট আছে।',
+    errWeakPassword: 'আরও শক্তিশালী পাসওয়ার্ড দিন (কমপক্ষে ৬টি অক্ষর)।',
+    errNetwork: 'সাইন ইন সেবায় যোগাযোগ করা যায়নি। আপনার সংযোগ পরীক্ষা করুন।',
+    errUnknown: 'কিছু একটা ভুল হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।',
+    profileTitle: 'আপনার একাডেমিক পরিচয়',
+    profileIntro: 'আপনি কোথায় পড়েন তা জানান, যাতে সবসময় সঠিক সিলেবাস দেখতে পান।',
+    profileSave: 'আমার প্রোফাইল সংরক্ষণ করুন',
+    profileSaved: 'আপনার প্রোফাইল সংরক্ষণ করা হয়েছে।',
+    profileSaveError: 'প্রোফাইল সংরক্ষণ করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।',
+    profileNeedsSignIn: 'প্রোফাইল তৈরি করতে অনুগ্রহ করে সাইন ইন করুন।',
+    profileNeedsApi: 'প্ল্যাটফর্মের API যুক্ত নেই, তাই এখনও প্রোফাইল সংরক্ষণ করা যাচ্ছে না।',
+    backToHome: 'হোমে ফিরে যান',
   },
 };

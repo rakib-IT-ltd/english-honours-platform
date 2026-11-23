@@ -21,9 +21,16 @@ Migrations: `20261120213500_academic_structure`, `20261122100000_multi_universit
 - `SyllabusSource.sourceType` distinguishes `OFFICIAL_UNIVERSITY_DOCUMENT` from `OTHER`; only the
   former counts toward verification.
 
+## Users and student profile
+
+- `User`: one row per Firebase account (`firebaseUid`, `email` unique, optional `displayName`,
+  `role` = `STUDENT`, `preferredLanguage` `en`/`bn` enforced by a CHECK). No password is stored.
+- `StudentProfile` (one per user): university, program, level and optional session. Composite
+  foreign keys make the database reject a program or session from another university and a level the
+  program does not offer. The session is optional until real sessions exist.
+
 ## Not yet designed
 
 Courses (titles, codes, credits, marks), topics, authors, literary works, learning resources,
-content workflow (Draft -> Academic Review -> Approval -> Publication), question bank, users and
-student academic identity, progress. Each is designed when its module is approved. Courses will
+content workflow (Draft -> Academic Review -> Approval -> Publication), question bank, progress. Each is designed when its module is approved. Courses will
 attach to `Syllabus`, so they inherit the university.

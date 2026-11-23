@@ -71,13 +71,37 @@ function Step(props: { number: number; title: string; text: string; children: Re
  * University -> program -> level picker. Everything comes from the API; no university, program or
  * syllabus is hardcoded here.
  */
-export function AcademicSelector({ language }: { language: SupportedLanguage }) {
+export interface Selection {
+  universityId: string;
+  programId: string;
+  levelId: string;
+}
+
+export function AcademicSelector({
+  language,
+  initial,
+  onSelectionChange,
+  showResult = true,
+}: {
+  language: SupportedLanguage;
+  /** Preselected ids (e.g. the signed-in student's profile). Read once, on first render. */
+  initial?: Selection;
+  onSelectionChange?: (selection: Selection) => void;
+  showResult?: boolean;
+}) {
   const t = STRINGS[language];
   const base = getApiBaseUrl();
 
-  const [universityId, setUniversityId] = useState('');
-  const [programId, setProgramId] = useState('');
-  const [levelId, setLevelId] = useState('');
+  const [universityId, setUniversityIdState] = useState(initial?.universityId ?? '');
+  const [programId, setProgramIdState] = useState(initial?.programId ?? '');
+  const [levelId, setLevelIdState] = useState(initial?.levelId ?? '');
+
+  const change = (next: Selection) => {
+    setUniversityIdState(next.universityId);
+    setProgramIdState(next.programId);
+    setLevelIdState(next.levelId);
+    onSelectionChange?.(next);
+  };
 
   const universities = useApiList<University>(base ? buildApiUrl(base, 'universities') : null);
   const programs = useApiList<AcademicProgram>(
@@ -119,11 +143,7 @@ export function AcademicSelector({ language }: { language: SupportedLanguage }) 
           selectedId={universityId}
           language={language}
           badge={(university) => university.code.slice(0, 2).toUpperCase()}
-          onSelect={(id) => {
-            setUniversityId(id);
-            setProgramId('');
-            setLevelId('');
-          }}
+          onSelect={(id) => change({ universityId: id, programId: '', levelId: '' })}
         />
         {message ? (
           <p role="status" className="notice">
@@ -140,10 +160,7 @@ export function AcademicSelector({ language }: { language: SupportedLanguage }) 
             selectedId={programId}
             language={language}
             badge={(program) => program.code.slice(0, 2).toUpperCase()}
-            onSelect={(id) => {
-              setProgramId(id);
-              setLevelId('');
-            }}
+            onSelect={(id) => change({ universityId, programId: id, levelId: '' })}
           />
         </Step>
       ) : null}
@@ -156,28 +173,34 @@ export function AcademicSelector({ language }: { language: SupportedLanguage }) 
             selectedId={levelId}
             language={language}
             badge={(level) => String(level.sequence)}
-            onSelect={setLevelId}
+            onSelect={(id) => change({ universityId, programId, levelId: id })}
           />
         </Step>
       ) : null}
 
-      <section className="result" aria-live="polite" aria-labelledby="result-title">
-        <h2 id="result-title">{t.resultTitle}</h2>
-        {syllabuses.status === 'idle' ? <p>{t.resultPrompt}</p> : null}
-        {syllabuses.status === 'loading' ? <p>{t.loading}</p> : null}
-        {syllabuses.status === 'error' ? <p>{t.loadError}</p> : null}
-        {syllabuses.status === 'ok' && syllabuses.data.length === 0 ? <p>{t.noSyllabus}</p> : null}
-        {syllabuses.status === 'ok'
-          ? syllabuses.data.map((syllabus) => (
-              <p key={syllabus.id}>
-                {t.version}: {syllabus.versionLabel}{' '}
-                <span className={syllabus.verificationStatus === 'VERIFIED' ? 'badge ok' : 'badge'}>
-                  {syllabus.verificationStatus === 'VERIFIED' ? t.verified : t.unverified}
-                </span>
-              </p>
-            ))
-          : null}
-      </section>
+      {showResult ? (
+        <section className="result" aria-live="polite" aria-labelledby="result-title">
+          <h2 id="result-title">{t.resultTitle}</h2>
+          {syllabuses.status === 'idle' ? <p>{t.resultPrompt}</p> : null}
+          {syllabuses.status === 'loading' ? <p>{t.loading}</p> : null}
+          {syllabuses.status === 'error' ? <p>{t.loadError}</p> : null}
+          {syllabuses.status === 'ok' && syllabuses.data.length === 0 ? (
+            <p>{t.noSyllabus}</p>
+          ) : null}
+          {syllabuses.status === 'ok'
+            ? syllabuses.data.map((syllabus) => (
+                <p key={syllabus.id}>
+                  {t.version}: {syllabus.versionLabel}{' '}
+                  <span
+                    className={syllabus.verificationStatus === 'VERIFIED' ? 'badge ok' : 'badge'}
+                  >
+                    {syllabus.verificationStatus === 'VERIFIED' ? t.verified : t.unverified}
+                  </span>
+                </p>
+              ))
+            : null}
+        </section>
+      ) : null}
     </div>
   );
 }

@@ -1,28 +1,20 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import type { SupportedLanguage } from '@ehp/shared-types';
+import Link from 'next/link';
 import { STRINGS } from '../../lib/i18n';
 import { AcademicSelector } from '../academic/AcademicSelector';
+import { useAuth, useLanguage } from '../providers/AppProviders';
 import { HeroIllustration } from './HeroIllustration';
-import { SiteFooter } from './SiteFooter';
-import { SiteHeader } from './SiteHeader';
+import { PageShell } from './PageShell';
 
 export function HomeView() {
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
+  const { language } = useLanguage();
+  const { status, user, me } = useAuth();
   const t = STRINGS[language];
-
-  useEffect(() => {
-    document.documentElement.lang = language;
-  }, [language]);
+  const profile = me?.profile ?? null;
 
   return (
-    <div lang={language} id="top">
-      <SiteHeader
-        language={language}
-        onToggleLanguage={() => setLanguage(language === 'en' ? 'bn' : 'en')}
-      />
-
+    <PageShell>
       <main>
         <section className="hero">
           <div className="hero-inner">
@@ -43,7 +35,32 @@ export function HomeView() {
           </div>
         </section>
 
-        <AcademicSelector language={language} />
+        {status === 'signedIn' ? (
+          <p className="signed-in-note" role="status">
+            {t.welcomeBack} <strong>{me?.displayName ?? user?.displayName ?? user?.email}</strong>.{' '}
+            {profile ? null : `${t.completeProfile} `}
+            <Link href="/profile">{profile ? t.editProfile : t.myProfile}</Link>
+          </p>
+        ) : null}
+
+        {/* Remount once the saved identity arrives so it becomes the preselection. */}
+        <AcademicSelector
+          key={
+            profile
+              ? `${profile.universityId}/${profile.academicProgramId}/${profile.academicLevelId}`
+              : 'none'
+          }
+          language={language}
+          {...(profile
+            ? {
+                initial: {
+                  universityId: profile.universityId,
+                  programId: profile.academicProgramId,
+                  levelId: profile.academicLevelId,
+                },
+              }
+            : {})}
+        />
 
         <section className="next" id="next" aria-labelledby="next-title">
           <div className="next-inner">
@@ -68,8 +85,6 @@ export function HomeView() {
           </ul>
         </section>
       </main>
-
-      <SiteFooter language={language} />
-    </div>
+    </PageShell>
   );
 }

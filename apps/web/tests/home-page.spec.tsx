@@ -1,6 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import HomePage from '../src/app/(public)/page';
+import { AppProviders } from '../src/components/providers/AppProviders';
+
+const renderHome = () =>
+  render(
+    <AppProviders>
+      <HomePage />
+    </AppProviders>,
+  );
 
 afterEach(() => {
   cleanup();
@@ -43,7 +51,7 @@ describe('HomePage without an API (static preview)', () => {
     vi.stubEnv('NEXT_PUBLIC_API_BASE_URL', '');
     const fetchMock = vi.fn();
     vi.stubGlobal('fetch', fetchMock);
-    render(<HomePage />);
+    renderHome();
     expect(
       screen.getByRole('heading', { level: 1, name: 'English Honours Learning Platform' }),
     ).toBeTruthy();
@@ -54,13 +62,13 @@ describe('HomePage without an API (static preview)', () => {
 
   it('does not claim materials or progress tracking exist yet', () => {
     vi.stubEnv('NEXT_PUBLIC_API_BASE_URL', '');
-    render(<HomePage />);
+    renderHome();
     expect(screen.getAllByText('Coming soon').length).toBe(2);
   });
 
   it('keeps Sign In disabled until authentication exists', () => {
     vi.stubEnv('NEXT_PUBLIC_API_BASE_URL', '');
-    render(<HomePage />);
+    renderHome();
     expect((screen.getByRole('button', { name: /Sign In/ }) as HTMLButtonElement).disabled).toBe(
       true,
     );
@@ -68,7 +76,7 @@ describe('HomePage without an API (static preview)', () => {
 
   it('switches the interface to Bangla and back', () => {
     vi.stubEnv('NEXT_PUBLIC_API_BASE_URL', '');
-    render(<HomePage />);
+    renderHome();
     fireEvent.click(screen.getByRole('button', { name: 'বাংলা' }));
     expect(document.documentElement.lang).toBe('bn');
     expect(screen.getByText('আপনার বিশ্ববিদ্যালয় নির্বাচন করুন')).toBeTruthy();
@@ -89,7 +97,7 @@ describe('HomePage selector with an API', () => {
 
   it('walks university -> program -> level and shows an empty state when no syllabus exists', async () => {
     const fetchMock = stubApi([]);
-    render(<HomePage />);
+    renderHome();
 
     expect(screen.queryByText('Choose your program')).toBeNull();
     await pick('Test University A');
@@ -111,7 +119,7 @@ describe('HomePage selector with an API', () => {
     stubApi([
       { id: 's1', versionLabel: 'TEST-v1', verificationStatus: 'UNVERIFIED', isCurrent: true },
     ]);
-    render(<HomePage />);
+    renderHome();
     await pick('Test University A');
     await pick('Test Honours');
     await pick('Honours 1st Year');
@@ -121,7 +129,7 @@ describe('HomePage selector with an API', () => {
 
   it('uses Bangla names when available and falls back to English otherwise', async () => {
     stubApi([]);
-    render(<HomePage />);
+    renderHome();
     fireEvent.click(screen.getByRole('button', { name: 'বাংলা' }));
     await waitFor(() => expect(screen.getByRole('button', { name: /পরীক্ষামূলক বি/ })).toBeTruthy());
     expect(screen.getByRole('button', { name: /Test University A/ })).toBeTruthy();
@@ -132,7 +140,7 @@ describe('HomePage selector with an API', () => {
       'fetch',
       vi.fn(() => Promise.reject(new Error('network'))),
     );
-    render(<HomePage />);
+    renderHome();
     await waitFor(() =>
       expect(screen.getByRole('status').textContent).toContain('Could not load data'),
     );

@@ -27,5 +27,5 @@ must be addable without major architectural change.
 
 ## 3. Later modules
 
-Authentication and student profile, courses/topics, learning materials, review workflow, question
+Courses/topics, learning materials, review workflow, question
 bank, AI assistant: requirements are written when each is proposed.

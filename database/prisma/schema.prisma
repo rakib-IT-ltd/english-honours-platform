@@ -7,12 +7,18 @@
 //   AcademicSession and Syllabus (with its sources/verification) are university-specific.
 //   Courses, topics and learning materials hang off Syllabus and are added in later modules.
 //
-// Further models (courses, content, users, ...) are added module by module after approval.
+// Module 2 - Authentication and student profile:
+//
+//   User (one per Firebase account; no passwords are stored here) -> StudentProfile (the student's
+//   academic identity: university, program, level and, optionally, session).
+//
+// Further models (courses, content, ...) are added module by module after approval.
 // The connection URL is supplied by prisma.config.ts (Prisma 7) from DATABASE_URL.
 //
 // Rules enforced OUTSIDE this file, in the SQL migrations (Prisma cannot express CHECK constraints):
 //  - University.code is a lowercase URL-safe identifier.
 //  - AcademicLevel.sequence >= 1; AcademicSession.endYear >= startYear.
+//  - User.preferredLanguage is 'en' or 'bn'.
 //  - At most one Syllabus with isCurrent = true per (program, level, session): partial unique index.
 // Same-university consistency IS enforced here, through composite foreign keys that carry
 // universityId (see Department, AcademicSession, AcademicProgram and Syllabus).
@@ -46,6 +52,11 @@ enum SyllabusSourceType {
   OTHER
 }
 
+/// Role of a user. Only STUDENT exists for now; reviewer/admin roles come with the content workflow.
+enum UserRole {
+  STUDENT
+}
+
 model University {
   id        String   @id @default(uuid())
   /// Short stable lowercase identifier, also used in website URLs (e.g. "nu"). Unique.
@@ -60,6 +71,7 @@ model University {
   academicPrograms AcademicProgram[]
   academicSessions AcademicSession[]
   syllabuses       Syllabus[]
+  studentProfiles  StudentProfile[]
 }
 
 model Department {
@@ -112,6 +124,7 @@ model AcademicProgram {
   department Department     @relation(fields: [departmentId, universityId], references: [id, universityId])
   levels     ProgramLevel[]
   syllabuses Syllabus[]
+  studentProfiles StudentProfile[]
 
   @@unique([universityId, code])
   @@unique([id, universityId])
@@ -126,6 +139,7 @@ model ProgramLevel {
   program AcademicProgram @relation(fields: [programId], references: [id])
   level   AcademicLevel   @relation(fields: [levelId], references: [id])
   syllabuses Syllabus[]
+  studentProfiles StudentProfile[]
 
   @@id([programId, levelId])
   @@index([levelId])
@@ -143,6 +157,7 @@ model AcademicSession {
 
   university University @relation(fields: [universityId], references: [id])
   syllabuses Syllabus[]
+  studentProfiles StudentProfile[]
 
   @@unique([universityId, label])
   @@unique([id, universityId])
@@ -213,4 +228,44 @@ model SyllabusVerification {
   syllabus Syllabus @relation(fields: [syllabusId], references: [id])
 
   @@index([syllabusId])
+}
+
+/// A platform user. One row per Firebase account; Firebase holds the credentials, we never store a
+/// password. Created on the user's first authenticated request.
+model User {
+  id                String   @id @default(uuid())
+  /// Firebase Authentication user id (the token's `uid`).
+  firebaseUid       String   @unique
+  email             String   @unique
+  displayName       String?
+  role              UserRole @default(STUDENT)
+  /// Interface language: 'en' or 'bn' (CHECK constraint in the migration SQL).
+  preferredLanguage String   @default("en")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  profile StudentProfile?
+}
+
+/// A student's academic identity: university + program + level (+ session, once known).
+/// Composite foreign keys make the database reject a program or session from another university
+/// and a level the program does not offer.
+model StudentProfile {
+  userId            String   @id
+  universityId      String
+  academicProgramId String
+  academicLevelId   String
+  /// Optional until the university's sessions are loaded from official documents.
+  academicSessionId String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user            User             @relation(fields: [userId], references: [id])
+  university      University       @relation(fields: [universityId], references: [id])
+  academicProgram AcademicProgram  @relation(fields: [academicProgramId, universityId], references: [id, universityId])
+  /// The program must actually offer this level.
+  programLevel    ProgramLevel     @relation(fields: [academicProgramId, academicLevelId], references: [programId, levelId])
+  academicSession AcademicSession? @relation(fields: [academicSessionId, universityId], references: [id, universityId], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([universityId])
 }

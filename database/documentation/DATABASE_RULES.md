@@ -32,3 +32,6 @@
   index in the migration SQL (Prisma ignores it when diffing).
 - The only seed is `database/prisma/seed/universities.sql` (names only, idempotent, development use).
   Syllabus, course and session data are never seeded from memory.
+- `User` rows are created by the API from a verified Firebase ID token; no password or Firebase uid
+  is ever returned by the API. `StudentProfile` uses composite foreign keys (same pattern as
+  `Syllabus`) so program, level and session must belong to the chosen university.

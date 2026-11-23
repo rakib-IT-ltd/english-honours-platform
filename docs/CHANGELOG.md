@@ -17,6 +17,13 @@
 
 ### Added
 
+- Authentication and student profile (ADR 0004): email + password sign-in through Firebase
+  Authentication (Firebase Auth Emulator for development; no Firebase account needed now). API:
+  `GET /me`, `PATCH /me`, `PUT /me/profile` behind a bearer ID token. New migration
+  `20261123100000_users_and_student_profiles` (`User`, `StudentProfile`). Website: `/register`,
+  `/login`, `/profile`. `scripts/codespaces-dev.sh` now also starts the emulator. Bangla strings are
+  a first draft and need review.
+
 - Development seed (`pnpm db:seed`, `database/prisma/seed/universities.sql`): names only - NU, DU,
   "Department of English", English Honours (4 years) and English Masters (1 year) programs linked to
   their shared levels. Idempotent; no syllabus, course, session or Bangla data. Plus

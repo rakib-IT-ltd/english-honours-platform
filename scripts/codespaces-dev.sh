@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Run the whole platform inside a GitHub Codespace so the home page can show universities.
-# Steps: apply migrations, seed names-only development data, point the website at the API's
-# forwarded URL, make the API port reachable by the browser, then start API (3001) and web (3000).
+# Steps: apply migrations, seed names-only development data, point the website at the API and the
+# Firebase Auth Emulator, make their ports reachable by the browser, then start the emulator (9099),
+# API (3001) and web (3000).
 # Usage (from the repository root, in the Codespace terminal):  bash scripts/codespaces-dev.sh
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -13,6 +14,7 @@ fi
 
 WEB_URL="https://${CODESPACE_NAME}-3000.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
 API_URL="https://${CODESPACE_NAME}-3001.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
+AUTH_URL="https://${CODESPACE_NAME}-9099.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
 
 # The API and web import the built shared package (dist/ is git-ignored, so build it first).
 pnpm --filter @ehp/shared-types build
@@ -20,17 +22,33 @@ pnpm --filter @ehp/shared-types build
 pnpm db:migrate:deploy
 pnpm db:seed
 
-# Only the (public) API address goes into the browser bundle - no secrets.
-echo "NEXT_PUBLIC_API_BASE_URL=${API_URL}/api/v1" > apps/web/.env.local
+# Only public values go into the browser bundle - no secrets. The Auth Emulator accepts any
+# placeholder API key, so no Firebase account is needed here.
+cat > apps/web/.env.local <<ENV
+NEXT_PUBLIC_API_BASE_URL=${API_URL}/api/v1
+NEXT_PUBLIC_FIREBASE_API_KEY=demo-api-key
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=demo-ehp
+NEXT_PUBLIC_FIREBASE_AUTH_EMULATOR_URL=${AUTH_URL}
+ENV
 
-# The browser calls the API directly, so the API port must be public (development only).
-gh codespace ports visibility 3001:public -c "${CODESPACE_NAME}" || \
-  echo "Could not change port visibility automatically: set port 3001 to Public in the Ports tab." >&2
+# The browser calls the API and the Auth Emulator directly, so both ports must be public
+# (development only; the data is temporary test data).
+gh codespace ports visibility 3001:public 9099:public -c "${CODESPACE_NAME}" || \
+  echo "Could not change port visibility automatically: set ports 3001 and 9099 to Public in the Ports tab." >&2
 
 echo "Web: ${WEB_URL}"
 echo "API docs: ${API_URL}/api/docs"
 
-CORS_ORIGINS="${WEB_URL}" pnpm dev:api &
+npx --yes firebase-tools@14 emulators:start --only auth --project demo-ehp \
+  --config infrastructure/firebase/firebase.json &
+EMULATOR_PID=$!
+for _ in $(seq 1 60); do
+  curl -sf http://127.0.0.1:9099/ >/dev/null && break
+  sleep 1
+done
+
+FIREBASE_PROJECT_ID=demo-ehp FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099 \
+  CORS_ORIGINS="${WEB_URL}" pnpm dev:api &
 API_PID=$!
-trap 'kill "${API_PID}" 2>/dev/null || true' EXIT
+trap 'kill "${API_PID}" "${EMULATOR_PID}" 2>/dev/null || true' EXIT
 pnpm dev:web
