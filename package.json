@@ -18,7 +18,8 @@
     "dev:web": "pnpm --filter @ehp/web dev",
     "db:generate": "pnpm --filter @ehp/api db:generate",
     "db:migrate": "pnpm --filter @ehp/api db:migrate",
-    "db:migrate:deploy": "pnpm --filter @ehp/api db:migrate:deploy"
+    "db:migrate:deploy": "pnpm --filter @ehp/api db:migrate:deploy",
+    "db:seed": "pnpm --filter @ehp/api db:seed"
   },
   "devDependencies": {
     "oxlint": "^1.58.0",

@@ -17,6 +17,11 @@
 
 ### Added
 
+- Development seed (`pnpm db:seed`, `database/prisma/seed/universities.sql`): names only - NU, DU,
+  "Department of English", English Honours (4 years) and English Masters (1 year) programs linked to
+  their shared levels. Idempotent; no syllabus, course, session or Bangla data. Plus
+  `scripts/codespaces-dev.sh` to run the stack in a Codespace.
+
 - Website home page (owner-approved layout): navy header, hero, step cards for university -> program -> level (English first, Bangla switch),
   selector fed by the API, with honest empty/not-connected states and verification badge. No
   university, course or syllabus is hardcoded; the static GitHub Pages preview shows the

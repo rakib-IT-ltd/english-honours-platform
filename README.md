@@ -79,6 +79,20 @@ pnpm dev:api     # http://localhost:3001/api/v1/health   Swagger: http://localho
 pnpm dev:web     # http://localhost:3000
 ```
 
+### See the universities on the home page (GitHub Codespaces)
+
+The home page loads universities from the API, so it needs the API, a migrated database and the
+development seed (names only: NU, DU, their Department of English and English programs; no syllabus
+data). In a Codespace terminal, from the repository root:
+
+```bash
+bash scripts/codespaces-dev.sh
+```
+
+It migrates, seeds, points the website at the API's forwarded address, makes port 3001 public
+(development only) and starts both apps. Open the "Web (Next.js)" forwarded port 3000. To seed
+without the script: `pnpm db:seed` (idempotent; refuses `NODE_ENV=production`).
+
 Run the whole stack in containers instead (API + web with hot reload):
 
 ```bash

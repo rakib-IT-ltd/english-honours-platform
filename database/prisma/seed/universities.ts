@@ -1,5 +1,3 @@
-// PLACEHOLDER - no seed data yet. Populate only from verified sources (see DATABASE_RULES.md).
-// The five shared AcademicLevel rows are reference data created by the migration, not seeded here.
-// NU and DU, their "Department of English" and their programs are added here (or by the admin
-// module) once the owner approves the exact names and codes.
+// The universities seed is `universities.sql` (names only), run with `pnpm db:seed`.
+// This file is intentionally empty and kept only so the approved folder tree is unchanged.
 export {};

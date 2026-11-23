@@ -30,3 +30,5 @@
   `pnpm db:migrate`; never edit an applied migration.
 - At most one `Syllabus` per (program, level, session) may have `isCurrent = true`: a partial unique
   index in the migration SQL (Prisma ignores it when diffing).
+- The only seed is `database/prisma/seed/universities.sql` (names only, idempotent, development use).
+  Syllabus, course and session data are never seeded from memory.
