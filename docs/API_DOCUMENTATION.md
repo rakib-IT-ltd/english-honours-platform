@@ -20,6 +20,17 @@
 `/syllabuses/{id}` includes `sources` and `verifications`. Unknown ids return 404. Tables are empty
 until verified data is loaded.
 
+## Courses and books (read-only, published content only)
+
+| Endpoint                        | Filters                  |
+| ------------------------------- | ------------------------ |
+| `GET /courses`, `/courses/{id}` | `syllabusId`             |
+| `GET /books`, `/books/{id}`     | `syllabusId`, `courseId` |
+
+Only `PUBLISHED` courses and books are returned; a book also needs its course to be published.
+Anything else is 404 on `/{id}` and absent from lists. `/courses/{id}` includes its published books;
+`/books/{id}` includes its course.
+
 ## Student account (requires `Authorization: Bearer <Firebase ID token>`)
 
 | Endpoint          | Purpose                                                                                   |

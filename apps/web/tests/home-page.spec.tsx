@@ -3,6 +3,9 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 import HomePage from '../src/app/(public)/page';
 import { AppProviders } from '../src/components/providers/AppProviders';
 
+const push = vi.fn();
+vi.mock('next/navigation', () => ({ useRouter: () => ({ push }) }));
+
 const renderHome = () =>
   render(
     <AppProviders>
@@ -12,6 +15,7 @@ const renderHome = () =>
 
 afterEach(() => {
   cleanup();
+  push.mockClear();
   vi.unstubAllGlobals();
   vi.unstubAllEnvs();
 });
@@ -47,7 +51,7 @@ function stubApi(syllabuses: unknown[]) {
 }
 
 describe('HomePage without an API (static preview)', () => {
-  it('renders the title, the Bangla line and an honest not-connected notice', () => {
+  it('renders the title (no Bangla tagline) and an honest not-connected notice', () => {
     vi.stubEnv('NEXT_PUBLIC_API_BASE_URL', '');
     const fetchMock = vi.fn();
     vi.stubGlobal('fetch', fetchMock);
@@ -55,7 +59,8 @@ describe('HomePage without an API (static preview)', () => {
     expect(
       screen.getByRole('heading', { level: 1, name: 'English Honours Learning Platform' }),
     ).toBeTruthy();
-    expect(document.querySelector('p[lang="bn"]')).not.toBeNull();
+    expect(document.querySelector('p[lang="bn"]')).toBeNull();
+    expect(screen.queryByText('ইংরেজি অনার্স লার্নিং প্ল্যাটফর্ম')).toBeNull();
     expect(screen.getByRole('status').textContent).toContain('not connected');
     expect(fetchMock).not.toHaveBeenCalled();
   });
@@ -109,6 +114,8 @@ describe('HomePage selector with an API', () => {
         screen.getByText('No syllabus has been published for this selection yet.'),
       ).toBeTruthy(),
     );
+    // Choosing the level opens the syllabus page.
+    expect(push).toHaveBeenCalledWith('/syllabus?university=u1&program=p1&level=l1');
     const urls = fetchMock.mock.calls.map((call) => call[0]);
     expect(urls).toContain(
       'http://api.test/api/v1/syllabuses?universityId=u1&academicProgramId=p1&academicLevelId=l1&isCurrent=true',

@@ -53,6 +53,15 @@ enum SyllabusSourceType {
 }
 
 /// Role of a user. Only STUDENT exists for now; reviewer/admin roles come with the content workflow.
+/// Content workflow: Draft -> Academic Review -> Approval -> Publication. Only PUBLISHED content is
+/// served by the public API.
+enum PublicationStatus {
+  DRAFT
+  IN_REVIEW
+  APPROVED
+  PUBLISHED
+}
+
 enum UserRole {
   STUDENT
 }
@@ -189,6 +198,7 @@ model Syllabus {
   programLevel    ProgramLevel    @relation(fields: [academicProgramId, academicLevelId], references: [programId, levelId])
   sources         SyllabusSource[]
   verifications   SyllabusVerification[]
+  courses         Course[]
 
   /// Explicit name: the default would exceed PostgreSQL's 63-character identifier limit.
   @@unique([academicProgramId, academicLevelId, academicSessionId, versionLabel], map: "Syllabus_program_level_session_version_key")
@@ -268,4 +278,49 @@ model StudentProfile {
   academicSession AcademicSession? @relation(fields: [academicSessionId, universityId], references: [id, universityId], onDelete: Restrict, onUpdate: Cascade)
 
   @@index([universityId])
+}
+
+/// A course exactly as listed in one university's syllabus version. Never copied between syllabus
+/// versions or universities. Credits and marks are optional: they are filled only when the official
+/// document states them.
+model Course {
+  id                String            @id @default(uuid())
+  syllabusId        String
+  code              String
+  titleEn           String
+  titleBn           String?
+  credits           Float?
+  marks             Int?
+  sequence          Int               @default(0)
+  publicationStatus PublicationStatus @default(DRAFT)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  syllabus Syllabus @relation(fields: [syllabusId], references: [id], onDelete: Cascade)
+  books    Book[]
+
+  @@unique([syllabusId, code])
+  @@index([syllabusId, publicationStatus])
+}
+
+/// A book listed (recommended or prescribed) for a course. Bibliographic details are optional and
+/// filled only from the official syllabus or the book itself.
+model Book {
+  id                String            @id @default(uuid())
+  courseId          String
+  titleEn           String
+  titleBn           String?
+  author            String?
+  publisher         String?
+  edition           String?
+  publicationYear   Int?
+  description       String?
+  sequence          Int               @default(0)
+  publicationStatus PublicationStatus @default(DRAFT)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@index([courseId, publicationStatus])
 }

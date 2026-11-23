@@ -29,8 +29,16 @@ Migrations: `20261120213500_academic_structure`, `20261122100000_multi_universit
   foreign keys make the database reject a program or session from another university and a level the
   program does not offer. The session is optional until real sessions exist.
 
+## Courses and books
+
+- `Course` belongs to one `Syllabus` (so it belongs to one university, program, level and session
+  version; never copied between them). Unique `(syllabusId, code)`. Credits and marks are optional.
+- `Book` belongs to one `Course`; author, publisher, edition and year are optional.
+- Both have `publicationStatus` (`DRAFT`, `IN_REVIEW`, `APPROVED`, `PUBLISHED`, default `DRAFT`);
+  the public API serves only `PUBLISHED`. Deleting a syllabus or course cascades to its children.
+
 ## Not yet designed
 
-Courses (titles, codes, credits, marks), topics, authors, literary works, learning resources,
+Topics, authors, literary works, learning resources,
 content workflow (Draft -> Academic Review -> Approval -> Publication), question bank, progress. Each is designed when its module is approved. Courses will
 attach to `Syllabus`, so they inherit the university.

@@ -4,6 +4,9 @@
 
 ### Changed
 
+- Home page: removed the Bangla title line; mobile layout reworked (single-column header, scrollable
+  menu, 44px tap targets, hidden illustration on phones).
+
 - Scope update: NU and DU are supported from launch. The per-department `AcademicYear` table is
   replaced by five shared `AcademicLevel` rows; new `AcademicProgram` and `ProgramLevel` tables;
   `Syllabus` now belongs to one university, program, level and session (composite foreign keys keep
@@ -16,6 +19,14 @@
   folder holds only a README.
 
 ### Added
+
+- Student journey (ADR 0005): choosing a level on the home page opens `/syllabus` (university,
+  department, program, level, current syllabus version, courses, book list); choosing a book opens
+  `/book`. New tables `Course` and `Book` with a `PublicationStatus` (Draft, In review, Approved,
+  Published) - migration `20261123200000_courses_and_books`. New read-only API: `/courses`,
+  `/books` (published content only). No courses or books are loaded: the pages show honest empty
+  states until verified content is added.
+- Step 2 shows the department ("Department of English") under the program choices.
 
 - Authentication and student profile (ADR 0004): email + password sign-in through Firebase
   Authentication (Firebase Auth Emulator for development; no Firebase account needed now). API:

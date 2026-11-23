@@ -77,6 +77,26 @@ export interface Strings {
   profileNeedsSignIn: string;
   profileNeedsApi: string;
   backToHome: string;
+  departmentLabel: string;
+  viewSyllabus: string;
+  syllabusPageTitle: string;
+  courseListTitle: string;
+  bookListTitle: string;
+  noCourses: string;
+  noBooks: string;
+  credits: string;
+  marks: string;
+  byAuthor: string;
+  publisher: string;
+  edition: string;
+  publicationYear: string;
+  listedForCourse: string;
+  openBook: string;
+  backToSyllabus: string;
+  bookNotFound: string;
+  materialsSoon: string;
+  selectionMissing: string;
+  chooseAgain: string;
 }
 
 // NOTE: Bangla wording is a first draft and must be reviewed by a language/academic reviewer.
@@ -171,6 +191,26 @@ export const STRINGS: Record<SupportedLanguage, Strings> = {
     profileNeedsSignIn: 'Please sign in to set up your profile.',
     profileNeedsApi: 'The platform API is not connected, so profiles cannot be saved yet.',
     backToHome: 'Back to home',
+    departmentLabel: 'Department',
+    viewSyllabus: 'View syllabus and books',
+    syllabusPageTitle: 'Your syllabus and books',
+    courseListTitle: 'Courses',
+    bookListTitle: 'Book list',
+    noCourses: 'No courses have been published for this syllabus yet.',
+    noBooks: 'No books have been published for this syllabus yet.',
+    credits: 'Credits',
+    marks: 'Marks',
+    byAuthor: 'by',
+    publisher: 'Publisher',
+    edition: 'Edition',
+    publicationYear: 'Year',
+    listedForCourse: 'Listed for course',
+    openBook: 'Open',
+    backToSyllabus: 'Back to syllabus',
+    bookNotFound: 'This book could not be found.',
+    materialsSoon: 'Notes, summaries and questions for this book are coming soon.',
+    selectionMissing: 'Please choose your university, program and level first.',
+    chooseAgain: 'Change selection',
   },
   bn: {
     brand: 'ইংরেজি অনার্স',
@@ -183,7 +223,7 @@ export const STRINGS: Record<SupportedLanguage, Strings> = {
     signIn: 'সাইন ইন',
     comingSoon: 'শীঘ্রই আসছে',
     heroBadge: 'আপনার একাডেমিক যাত্রা শুরু হোক এখানে',
-    heroTitle: 'ইংরেজি অনার্স লার্নিং প্ল্যাটফর্ম',
+    heroTitle: 'English Honours Learning Platform',
     heroText: 'সহজ ইংরেজি পাঠ ও বাংলা ব্যাখ্যার মাধ্যমে সাহিত্য, ভাষা ও সমালোচনা শিখুন।',
     heroPoints: ['ভালো বোঝাপড়া', 'শক্তিশালী সমালোচনামূলক চিন্তা', 'উজ্জ্বল ভবিষ্যৎ'],
     step1Title: 'আপনার বিশ্ববিদ্যালয় নির্বাচন করুন',
@@ -261,5 +301,25 @@ export const STRINGS: Record<SupportedLanguage, Strings> = {
     profileNeedsSignIn: 'প্রোফাইল তৈরি করতে অনুগ্রহ করে সাইন ইন করুন।',
     profileNeedsApi: 'প্ল্যাটফর্মের API যুক্ত নেই, তাই এখনও প্রোফাইল সংরক্ষণ করা যাচ্ছে না।',
     backToHome: 'হোমে ফিরে যান',
+    departmentLabel: 'বিভাগ',
+    viewSyllabus: 'সিলেবাস ও বইয়ের তালিকা দেখুন',
+    syllabusPageTitle: 'আপনার সিলেবাস ও বই',
+    courseListTitle: 'কোর্সসমূহ',
+    bookListTitle: 'বইয়ের তালিকা',
+    noCourses: 'এই সিলেবাসের জন্য এখনও কোনো কোর্স প্রকাশ করা হয়নি।',
+    noBooks: 'এই সিলেবাসের জন্য এখনও কোনো বই প্রকাশ করা হয়নি।',
+    credits: 'ক্রেডিট',
+    marks: 'নম্বর',
+    byAuthor: 'লেখক:',
+    publisher: 'প্রকাশক',
+    edition: 'সংস্করণ',
+    publicationYear: 'বছর',
+    listedForCourse: 'যে কোর্সের জন্য তালিকাভুক্ত',
+    openBook: 'খুলুন',
+    backToSyllabus: 'সিলেবাসে ফিরে যান',
+    bookNotFound: 'এই বইটি পাওয়া যায়নি।',
+    materialsSoon: 'এই বইয়ের নোট, সারসংক্ষেপ ও প্রশ্ন শীঘ্রই আসছে।',
+    selectionMissing: 'অনুগ্রহ করে আগে আপনার বিশ্ববিদ্যালয়, প্রোগ্রাম ও স্তর নির্বাচন করুন।',
+    chooseAgain: 'নির্বাচন পরিবর্তন করুন',
   },
 };

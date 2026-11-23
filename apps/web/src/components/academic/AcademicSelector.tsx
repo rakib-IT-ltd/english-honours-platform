@@ -1,13 +1,16 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
 import type { SupportedLanguage } from '@ehp/shared-types';
 import { useApiList } from '../../hooks/useApiList';
 import { buildApiUrl, getApiBaseUrl } from '../../lib/api';
 import { displayName, STRINGS } from '../../lib/i18n';
+import { syllabusHref } from '../../lib/routes';
 import type {
   AcademicLevel,
   AcademicProgram,
+  Department,
   SyllabusSummary,
   University,
 } from '../../types/academic';
@@ -49,7 +52,13 @@ function ChoiceCards<T extends Choice>(props: {
   );
 }
 
-function Step(props: { number: number; title: string; text: string; children: React.ReactNode }) {
+function Step(props: {
+  number: number;
+  title: string;
+  text: string;
+  caption?: string | undefined;
+  children: React.ReactNode;
+}) {
   const headingId = `step-${props.number}-title`;
   return (
     <section className="step" aria-labelledby={headingId}>
@@ -60,6 +69,7 @@ function Step(props: { number: number; title: string; text: string; children: Re
         <div>
           <h2 id={headingId}>{props.title}</h2>
           <p>{props.text}</p>
+          {props.caption ? <p className="step-caption">{props.caption}</p> : null}
         </div>
       </div>
       {props.children}
@@ -81,12 +91,15 @@ export function AcademicSelector({
   language,
   initial,
   onSelectionChange,
+  onLevelChosen,
   showResult = true,
 }: {
   language: SupportedLanguage;
   /** Preselected ids (e.g. the signed-in student's profile). Read once, on first render. */
   initial?: Selection;
   onSelectionChange?: (selection: Selection) => void;
+  /** Called when the student clicks a level (the last choice). */
+  onLevelChosen?: (selection: Selection) => void;
   showResult?: boolean;
 }) {
   const t = STRINGS[language];
@@ -107,6 +120,9 @@ export function AcademicSelector({
   const programs = useApiList<AcademicProgram>(
     base && universityId ? buildApiUrl(base, 'academic-programs', { universityId }) : null,
   );
+  const departments = useApiList<Department>(
+    base && universityId ? buildApiUrl(base, 'departments', { universityId }) : null,
+  );
   const levels = useApiList<AcademicLevel>(
     base && programId
       ? buildApiUrl(base, 'academic-levels', { academicProgramId: programId })
@@ -126,6 +142,12 @@ export function AcademicSelector({
   const universityItems = universities.status === 'ok' ? universities.data : [];
   const programItems = programs.status === 'ok' ? programs.data : [];
   const levelItems = levels.status === 'ok' ? levels.data : [];
+  const departmentId = programItems.find((program) => program.id === programId)?.departmentId;
+  const departmentList = departments.status === 'ok' ? departments.data : [];
+  // The department the chosen program belongs to; before a program is chosen, the university's department.
+  const department =
+    departmentList.find((item) => item.id === departmentId) ??
+    (departmentList.length === 1 ? departmentList[0] : undefined);
 
   let message: string | null = null;
   if (!base) message = t.notConnected;
@@ -153,7 +175,12 @@ export function AcademicSelector({
       </Step>
 
       {universityId ? (
-        <Step number={2} title={t.step2Title} text={t.step2Text}>
+        <Step
+          number={2}
+          title={t.step2Title}
+          text={t.step2Text}
+          caption={department ? displayName(department, language) : undefined}
+        >
           {programs.status === 'loading' ? <p className="muted">{t.loading}</p> : null}
           <ChoiceCards
             items={programItems}
@@ -173,7 +200,11 @@ export function AcademicSelector({
             selectedId={levelId}
             language={language}
             badge={(level) => String(level.sequence)}
-            onSelect={(id) => change({ universityId, programId, levelId: id })}
+            onSelect={(id) => {
+              const next = { universityId, programId, levelId: id };
+              change(next);
+              onLevelChosen?.(next);
+            }}
           />
         </Step>
       ) : null}
@@ -199,6 +230,16 @@ export function AcademicSelector({
                 </p>
               ))
             : null}
+          {universityId && programId && levelId ? (
+            <p>
+              <Link
+                className="primary-button link-button"
+                href={syllabusHref({ universityId, programId, levelId })}
+              >
+                {t.viewSyllabus} →
+              </Link>
+            </p>
+          ) : null}
         </section>
       ) : null}
     </div>

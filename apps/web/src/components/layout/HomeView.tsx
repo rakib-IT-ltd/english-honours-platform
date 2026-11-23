@@ -1,6 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { syllabusHref } from '../../lib/routes';
 import { STRINGS } from '../../lib/i18n';
 import { AcademicSelector } from '../academic/AcademicSelector';
 import { useAuth, useLanguage } from '../providers/AppProviders';
@@ -10,6 +12,7 @@ import { PageShell } from './PageShell';
 export function HomeView() {
   const { language } = useLanguage();
   const { status, user, me } = useAuth();
+  const router = useRouter();
   const t = STRINGS[language];
   const profile = me?.profile ?? null;
 
@@ -21,9 +24,6 @@ export function HomeView() {
             <div className="hero-copy">
               <span className="hero-badge">{t.heroBadge}</span>
               <h1>{STRINGS.en.heroTitle}</h1>
-              <p lang="bn" className="hero-bn">
-                {STRINGS.bn.heroTitle}
-              </p>
               <p className="hero-text">{t.heroText}</p>
               <ul className="hero-points">
                 {t.heroPoints.map((point) => (
@@ -51,6 +51,7 @@ export function HomeView() {
               : 'none'
           }
           language={language}
+          onLevelChosen={(selection) => router.push(syllabusHref(selection))}
           {...(profile
             ? {
                 initial: {
