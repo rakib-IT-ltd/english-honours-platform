@@ -52,12 +52,26 @@ describe('HomePage without an API (static preview)', () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
+  it('does not claim materials or progress tracking exist yet', () => {
+    vi.stubEnv('NEXT_PUBLIC_API_BASE_URL', '');
+    render(<HomePage />);
+    expect(screen.getAllByText('Coming soon').length).toBe(2);
+  });
+
+  it('keeps Sign In disabled until authentication exists', () => {
+    vi.stubEnv('NEXT_PUBLIC_API_BASE_URL', '');
+    render(<HomePage />);
+    expect((screen.getByRole('button', { name: /Sign In/ }) as HTMLButtonElement).disabled).toBe(
+      true,
+    );
+  });
+
   it('switches the interface to Bangla and back', () => {
     vi.stubEnv('NEXT_PUBLIC_API_BASE_URL', '');
     render(<HomePage />);
     fireEvent.click(screen.getByRole('button', { name: 'বাংলা' }));
     expect(document.documentElement.lang).toBe('bn');
-    expect(screen.getByText('আপনার বিশ্ববিদ্যালয় ও স্তর নির্বাচন করুন')).toBeTruthy();
+    expect(screen.getByText('আপনার বিশ্ববিদ্যালয় নির্বাচন করুন')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: 'English' }));
     expect(document.documentElement.lang).toBe('en');
   });
@@ -68,22 +82,19 @@ describe('HomePage selector with an API', () => {
     vi.stubEnv('NEXT_PUBLIC_API_BASE_URL', 'http://api.test/api/v1');
   });
 
+  async function pick(name: string) {
+    const button = await screen.findByRole('button', { name: new RegExp(name) });
+    fireEvent.click(button);
+  }
+
   it('walks university -> program -> level and shows an empty state when no syllabus exists', async () => {
     const fetchMock = stubApi([]);
     render(<HomePage />);
 
-    await waitFor(() =>
-      expect(screen.getByRole('option', { name: 'Test University A' })).toBeTruthy(),
-    );
-    expect((screen.getByLabelText('Program') as HTMLSelectElement).disabled).toBe(true);
-
-    fireEvent.change(screen.getByLabelText('University'), { target: { value: 'u1' } });
-    await waitFor(() => expect(screen.getByRole('option', { name: 'Test Honours' })).toBeTruthy());
-    fireEvent.change(screen.getByLabelText('Program'), { target: { value: 'p1' } });
-    await waitFor(() =>
-      expect(screen.getByRole('option', { name: 'Honours 1st Year' })).toBeTruthy(),
-    );
-    fireEvent.change(screen.getByLabelText('Level'), { target: { value: 'l1' } });
+    expect(screen.queryByText('Choose your program')).toBeNull();
+    await pick('Test University A');
+    await pick('Test Honours');
+    await pick('Honours 1st Year');
 
     await waitFor(() =>
       expect(
@@ -101,16 +112,9 @@ describe('HomePage selector with an API', () => {
       { id: 's1', versionLabel: 'TEST-v1', verificationStatus: 'UNVERIFIED', isCurrent: true },
     ]);
     render(<HomePage />);
-    await waitFor(() =>
-      expect(screen.getByRole('option', { name: 'Test University A' })).toBeTruthy(),
-    );
-    fireEvent.change(screen.getByLabelText('University'), { target: { value: 'u1' } });
-    await waitFor(() => expect(screen.getByRole('option', { name: 'Test Honours' })).toBeTruthy());
-    fireEvent.change(screen.getByLabelText('Program'), { target: { value: 'p1' } });
-    await waitFor(() =>
-      expect(screen.getByRole('option', { name: 'Honours 1st Year' })).toBeTruthy(),
-    );
-    fireEvent.change(screen.getByLabelText('Level'), { target: { value: 'l1' } });
+    await pick('Test University A');
+    await pick('Test Honours');
+    await pick('Honours 1st Year');
     await waitFor(() => expect(screen.getByText('Not yet verified')).toBeTruthy());
     expect(screen.queryByText('Verified against an official source')).toBeNull();
   });
@@ -119,8 +123,8 @@ describe('HomePage selector with an API', () => {
     stubApi([]);
     render(<HomePage />);
     fireEvent.click(screen.getByRole('button', { name: 'বাংলা' }));
-    await waitFor(() => expect(screen.getByRole('option', { name: 'পরীক্ষামূলক বি' })).toBeTruthy());
-    expect(screen.getByRole('option', { name: 'Test University A' })).toBeTruthy();
+    await waitFor(() => expect(screen.getByRole('button', { name: /পরীক্ষামূলক বি/ })).toBeTruthy());
+    expect(screen.getByRole('button', { name: /Test University A/ })).toBeTruthy();
   });
 
   it('tells the user when the API cannot be reached', async () => {

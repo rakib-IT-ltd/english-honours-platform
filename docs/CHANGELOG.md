@@ -17,7 +17,7 @@
 
 ### Added
 
-- Website home page: bilingual (English first, Bangla switch) university -> program -> level
+- Website home page (owner-approved layout): navy header, hero, step cards for university -> program -> level (English first, Bangla switch),
   selector fed by the API, with honest empty/not-connected states and verification badge. No
   university, course or syllabus is hardcoded; the static GitHub Pages preview shows the
   "not connected" notice because it has no API.

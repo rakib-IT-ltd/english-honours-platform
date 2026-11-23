@@ -12,37 +12,58 @@ import type {
   University,
 } from '../../types/academic';
 
-interface SelectProps<T extends { id: string; nameEn: string; nameBn: string | null }> {
+interface Choice {
   id: string;
-  label: string;
-  placeholder: string;
-  items: T[];
-  value: string;
-  disabled: boolean;
-  language: SupportedLanguage;
-  onChange: (value: string) => void;
+  nameEn: string;
+  nameBn: string | null;
 }
 
-function Select<T extends { id: string; nameEn: string; nameBn: string | null }>(
-  props: SelectProps<T>,
-) {
+/** A row of selectable cards. `badge` is shown in the card's round marker. */
+function ChoiceCards<T extends Choice>(props: {
+  items: T[];
+  selectedId: string;
+  language: SupportedLanguage;
+  badge: (item: T) => string;
+  onSelect: (id: string) => void;
+}) {
   return (
-    <div className="field">
-      <label htmlFor={props.id}>{props.label}</label>
-      <select
-        id={props.id}
-        value={props.value}
-        disabled={props.disabled}
-        onChange={(event) => props.onChange(event.target.value)}
-      >
-        <option value="">{props.placeholder}</option>
-        {props.items.map((item) => (
-          <option key={item.id} value={item.id}>
-            {displayName(item, props.language)}
-          </option>
-        ))}
-      </select>
+    <div className="choice-grid">
+      {props.items.map((item, index) => (
+        <button
+          key={item.id}
+          type="button"
+          className={`choice tone-${index % 2}`}
+          aria-pressed={props.selectedId === item.id}
+          onClick={() => props.onSelect(item.id)}
+        >
+          <span className="choice-badge" aria-hidden="true">
+            {props.badge(item)}
+          </span>
+          <span className="choice-name">{displayName(item, props.language)}</span>
+          <span className="choice-arrow" aria-hidden="true">
+            →
+          </span>
+        </button>
+      ))}
     </div>
+  );
+}
+
+function Step(props: { number: number; title: string; text: string; children: React.ReactNode }) {
+  const headingId = `step-${props.number}-title`;
+  return (
+    <section className="step" aria-labelledby={headingId}>
+      <div className="step-head">
+        <span className="step-number" aria-hidden="true">
+          {props.number}
+        </span>
+        <div>
+          <h2 id={headingId}>{props.title}</h2>
+          <p>{props.text}</p>
+        </div>
+      </div>
+      {props.children}
+    </section>
   );
 }
 
@@ -86,63 +107,65 @@ export function AcademicSelector({ language }: { language: SupportedLanguage }) 
   if (!base) message = t.notConnected;
   else if (universities.status === 'error') message = t.loadError;
   else if (universities.status === 'ok' && universityItems.length === 0) message = t.noUniversities;
-  else if (programs.status === 'ok' && programItems.length === 0) message = t.noPrograms;
   else if (programs.status === 'error' || levels.status === 'error') message = t.loadError;
+  else if (programs.status === 'ok' && programItems.length === 0) message = t.noPrograms;
 
   return (
-    <section aria-labelledby="choose-title" className="card">
-      <h2 id="choose-title">{t.chooseTitle}</h2>
-
-      {message ? (
-        <p role="status" className="notice">
-          {message}
-        </p>
-      ) : null}
-
-      <div className="fields">
-        <Select
-          id="university"
-          label={t.university}
-          placeholder={universities.status === 'loading' ? t.loading : t.selectPlaceholder}
+    <div className="selector">
+      <Step number={1} title={t.step1Title} text={t.step1Text}>
+        {universities.status === 'loading' ? <p className="muted">{t.loading}</p> : null}
+        <ChoiceCards
           items={universityItems}
-          value={universityId}
-          disabled={universityItems.length === 0}
+          selectedId={universityId}
           language={language}
-          onChange={(value) => {
-            setUniversityId(value);
+          badge={(university) => university.code.slice(0, 2).toUpperCase()}
+          onSelect={(id) => {
+            setUniversityId(id);
             setProgramId('');
             setLevelId('');
           }}
         />
-        <Select
-          id="program"
-          label={t.program}
-          placeholder={programs.status === 'loading' ? t.loading : t.selectPlaceholder}
-          items={programItems}
-          value={programId}
-          disabled={!universityId || programItems.length === 0}
-          language={language}
-          onChange={(value) => {
-            setProgramId(value);
-            setLevelId('');
-          }}
-        />
-        <Select
-          id="level"
-          label={t.level}
-          placeholder={levels.status === 'loading' ? t.loading : t.selectPlaceholder}
-          items={levelItems}
-          value={levelId}
-          disabled={!programId || levelItems.length === 0}
-          language={language}
-          onChange={setLevelId}
-        />
-      </div>
+        {message ? (
+          <p role="status" className="notice">
+            {message}
+          </p>
+        ) : null}
+      </Step>
 
-      <div className="result" aria-live="polite">
-        <h3>{t.resultTitle}</h3>
+      {universityId ? (
+        <Step number={2} title={t.step2Title} text={t.step2Text}>
+          {programs.status === 'loading' ? <p className="muted">{t.loading}</p> : null}
+          <ChoiceCards
+            items={programItems}
+            selectedId={programId}
+            language={language}
+            badge={(program) => program.code.slice(0, 2).toUpperCase()}
+            onSelect={(id) => {
+              setProgramId(id);
+              setLevelId('');
+            }}
+          />
+        </Step>
+      ) : null}
+
+      {programId ? (
+        <Step number={3} title={t.step3Title} text={t.step3Text}>
+          {levels.status === 'loading' ? <p className="muted">{t.loading}</p> : null}
+          <ChoiceCards
+            items={levelItems}
+            selectedId={levelId}
+            language={language}
+            badge={(level) => String(level.sequence)}
+            onSelect={setLevelId}
+          />
+        </Step>
+      ) : null}
+
+      <section className="result" aria-live="polite" aria-labelledby="result-title">
+        <h2 id="result-title">{t.resultTitle}</h2>
         {syllabuses.status === 'idle' ? <p>{t.resultPrompt}</p> : null}
         {syllabuses.status === 'loading' ? <p>{t.loading}</p> : null}
+        {syllabuses.status === 'error' ? <p>{t.loadError}</p> : null}
         {syllabuses.status === 'ok' && syllabuses.data.length === 0 ? <p>{t.noSyllabus}</p> : null}
         {syllabuses.status === 'ok'
           ? syllabuses.data.map((syllabus) => (
@@ -154,7 +177,7 @@ export function AcademicSelector({ language }: { language: SupportedLanguage }) 
               </p>
             ))
           : null}
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }
