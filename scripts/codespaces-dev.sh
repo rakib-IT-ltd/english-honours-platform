@@ -14,6 +14,9 @@ fi
 WEB_URL="https://${CODESPACE_NAME}-3000.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
 API_URL="https://${CODESPACE_NAME}-3001.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
 
+# The API and web import the built shared package (dist/ is git-ignored, so build it first).
+pnpm --filter @ehp/shared-types build
+
 pnpm db:migrate:deploy
 pnpm db:seed
 
