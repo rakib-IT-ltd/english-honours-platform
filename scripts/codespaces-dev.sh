@@ -16,6 +16,10 @@ WEB_URL="https://${CODESPACE_NAME}-3000.${GITHUB_CODESPACES_PORT_FORWARDING_DOMA
 API_URL="https://${CODESPACE_NAME}-3001.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
 AUTH_URL="https://${CODESPACE_NAME}-9099.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
 
+# After a "git pull" new packages may be needed (installing also regenerates the database client).
+pnpm install
+pnpm db:generate
+
 # The API and web import the built shared package (dist/ is git-ignored, so build it first).
 pnpm --filter @ehp/shared-types build
 
