@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 import { STRINGS } from '../../lib/i18n';
 import { useAuth, useLanguage } from '../providers/AppProviders';
 import { BrandMark } from './BrandMark';
@@ -9,10 +10,11 @@ export function SiteHeader() {
   const { language, toggleLanguage } = useLanguage();
   const { status, user, signOut } = useAuth();
   const t = STRINGS[language];
+  const [open, setOpen] = useState(false);
 
   return (
     <header className="site-header">
-      <div className="header-inner">
+      <div className={open ? 'header-inner is-open' : 'header-inner'}>
         <Link className="brand" href="/">
           <BrandMark />
           <span>
@@ -21,7 +23,18 @@ export function SiteHeader() {
           </span>
         </Link>
 
-        <nav aria-label="Site" className="main-nav">
+        <button
+          type="button"
+          className="menu-button"
+          aria-expanded={open}
+          aria-controls="site-menu"
+          aria-label={t.menu}
+          onClick={() => setOpen((value) => !value)}
+        >
+          <span aria-hidden="true" />
+        </button>
+
+        <nav aria-label="Site" id="site-menu" className="main-nav">
           <Link href="/" aria-current="page">
             {t.navHome}
           </Link>

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 import { useApiItem } from '../../hooks/useApiItem';
 import { useApiList } from '../../hooks/useApiList';
 import { buildApiUrl, getApiBaseUrl } from '../../lib/api';
@@ -19,6 +20,7 @@ import {
 } from '../../types/academic';
 import { useLanguage } from '../providers/AppProviders';
 import { PageShell } from '../layout/PageShell';
+import { BooksArt } from './BooksArt';
 
 /** Page 2: where the student sees the syllabus and the list of books for their selection. */
 export function SyllabusView() {
@@ -66,12 +68,16 @@ export function SyllabusView() {
   );
 
   const here = syllabusHref({ universityId, programId, levelId });
+  const [tab, setTab] = useState<'syllabus' | 'courses' | 'resources'>('syllabus');
+  const [courseFilter, setCourseFilter] = useState('');
   const departmentName =
     program.status === 'ok' && departments.status === 'ok'
       ? departments.data.find((item) => item.id === program.data.departmentId)
       : undefined;
   const courseItems = courses.status === 'ok' ? courses.data : [];
-  const bookItems = books.status === 'ok' ? books.data : [];
+  const bookItems = (books.status === 'ok' ? books.data : []).filter(
+    (book) => !courseFilter || book.courseId === courseFilter,
+  );
 
   let problem: string | null = null;
   if (!complete) problem = t.selectionMissing;
@@ -81,28 +87,69 @@ export function SyllabusView() {
   )
     problem = t.loadError;
 
+  const uniName = university.status === 'ok' ? displayName(university.data, language) : '';
+  const levelName = level.status === 'ok' ? displayName(level.data, language) : '';
+  const tabs = [
+    ['syllabus', t.tabSyllabus],
+    ['courses', t.tabCourses],
+    ['resources', t.tabResources],
+  ] as const;
+
   return (
     <PageShell>
-      <main className="form-page wide syllabus-page">
-        <p>
-          <Link href="/">← {t.chooseAgain}</Link>
-        </p>
-        <h1>{t.syllabusPageTitle}</h1>
+      <main className="syl-page">
+        <nav aria-label="Breadcrumb">
+          <ol className="breadcrumb">
+            <li>
+              <Link href="/">{t.navHome}</Link>
+            </li>
+            {uniName ? (
+              <li>
+                {t.universityLabel}: {uniName}
+              </li>
+            ) : null}
+            {levelName ? <li aria-current="page">{levelName}</li> : null}
+          </ol>
+        </nav>
 
         {problem ? (
           <p role="status" className="notice">
-            {problem}
+            {problem} <Link href="/">{t.chooseAgain}</Link>
           </p>
         ) : (
           <>
-            <ul className="crumbs" aria-label={t.syllabusPageTitle}>
-              {university.status === 'ok' ? (
-                <li>{displayName(university.data, language)}</li>
-              ) : null}
-              {departmentName ? <li>{displayName(departmentName, language)}</li> : null}
-              {program.status === 'ok' ? <li>{displayName(program.data, language)}</li> : null}
-              {level.status === 'ok' ? <li>{displayName(level.data, language)}</li> : null}
-            </ul>
+            <section className="syl-banner" aria-label={t.syllabusPageTitle}>
+              <span className="uni-badge" aria-hidden="true">
+                {university.status === 'ok' ? university.data.code.toUpperCase() : ''}
+              </span>
+              <div className="syl-banner-text">
+                {uniName ? (
+                  <span className="selected-chip">
+                    {t.selectedUniversity}: {uniName}
+                  </span>
+                ) : null}
+                <h1>{levelName || t.syllabusPageTitle}</h1>
+                <p>{t.exploreLine}</p>
+              </div>
+              <BooksArt />
+            </section>
+
+            <div className="tabs" role="tablist" aria-label={t.syllabusPageTitle}>
+              {tabs.map(([key, label]) => (
+                <button
+                  key={key}
+                  type="button"
+                  role="tab"
+                  id={`tab-${key}`}
+                  aria-selected={tab === key}
+                  aria-controls={`panel-${key}`}
+                  className="tab"
+                  onClick={() => setTab(key)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
 
             {syllabuses.status === 'loading' ? <p className="muted">{t.loading}</p> : null}
             {syllabuses.status === 'ok' && !syllabus ? (
@@ -110,71 +157,146 @@ export function SyllabusView() {
                 {t.noSyllabus}
               </p>
             ) : null}
-            {syllabus ? (
-              <p>
-                {t.version}: {syllabus.versionLabel}{' '}
-                <span className={syllabus.verificationStatus === 'VERIFIED' ? 'badge ok' : 'badge'}>
-                  {syllabus.verificationStatus === 'VERIFIED' ? t.verified : t.unverified}
-                </span>
-              </p>
-            ) : null}
 
-            {syllabus ? (
-              <>
-                <section aria-labelledby="courses-title" className="listing">
-                  <h2 id="courses-title">{t.courseListTitle}</h2>
-                  {courses.status === 'loading' ? <p className="muted">{t.loading}</p> : null}
-                  {courses.status === 'error' ? <p>{t.loadError}</p> : null}
-                  {courses.status === 'ok' && courseItems.length === 0 ? (
-                    <p className="notice">{t.noCourses}</p>
+            {tab === 'syllabus' && syllabus ? (
+              <div role="tabpanel" id="panel-syllabus" aria-labelledby="tab-syllabus">
+                <section className="panel" aria-labelledby="overview-title">
+                  <div className="panel-head">
+                    <h2 id="overview-title">{t.overviewTitle}</h2>
+                    <span
+                      className={syllabus.verificationStatus === 'VERIFIED' ? 'badge ok' : 'badge'}
+                    >
+                      {syllabus.verificationStatus === 'VERIFIED' ? t.verified : t.unverified}
+                    </span>
+                  </div>
+                  <div className="stat-grid">
+                    <div className="stat">
+                      <span>{t.statProgram}</span>
+                      <strong>
+                        {program.status === 'ok' ? displayName(program.data, language) : '…'}
+                      </strong>
+                    </div>
+                    <div className="stat">
+                      <span>{t.statVersion}</span>
+                      <strong>{syllabus.versionLabel}</strong>
+                    </div>
+                    <div className="stat">
+                      <span>{t.statCourses}</span>
+                      <strong>{courses.status === 'ok' ? courseItems.length : '…'}</strong>
+                    </div>
+                    <div className="stat">
+                      <span>{t.statBooks}</span>
+                      <strong>{books.status === 'ok' ? books.data.length : '…'}</strong>
+                    </div>
+                  </div>
+                  {departmentName ? (
+                    <p className="info-note">
+                      {t.departmentLabel}: {displayName(departmentName, language)}
+                    </p>
                   ) : null}
-                  <ul className="card-list">
-                    {courseItems.map((course) => (
-                      <li key={course.id} className="card">
-                        <span className="card-code">{course.code}</span>
-                        <span className="card-title">{titleFor(course, bn)}</span>
-                        <span className="card-meta">
-                          {course.credits !== null ? `${t.credits}: ${course.credits}` : null}
-                          {course.credits !== null && course.marks !== null ? ' · ' : null}
-                          {course.marks !== null ? `${t.marks}: ${course.marks}` : null}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
+                  <p className="info-note">
+                    {syllabus.verificationStatus === 'VERIFIED' ? t.verifiedNote : t.unverifiedNote}
+                  </p>
                 </section>
 
-                <section aria-labelledby="books-title" className="listing">
-                  <h2 id="books-title">{t.bookListTitle}</h2>
-                  {books.status === 'loading' ? <p className="muted">{t.loading}</p> : null}
-                  {books.status === 'error' ? <p>{t.loadError}</p> : null}
-                  {books.status === 'ok' && bookItems.length === 0 ? (
-                    <p className="notice">{t.noBooks}</p>
+                <section className="panel" aria-labelledby="books-title">
+                  <div className="panel-head">
+                    <h2 id="books-title">{t.bookListTitle}</h2>
+                    {courseItems.length > 1 ? (
+                      <select
+                        aria-label={t.filterByCourse}
+                        value={courseFilter}
+                        onChange={(event) => setCourseFilter(event.target.value)}
+                      >
+                        <option value="">{t.allCourses}</option>
+                        {courseItems.map((course) => (
+                          <option key={course.id} value={course.id}>
+                            {course.code} · {titleFor(course, bn)}
+                          </option>
+                        ))}
+                      </select>
+                    ) : null}
+                  </div>
+                  {books.status === 'loading' ? (
+                    <p className="panel-body muted">{t.loading}</p>
                   ) : null}
-                  <ul className="card-list">
+                  {books.status === 'error' ? <p className="panel-body">{t.loadError}</p> : null}
+                  {books.status === 'ok' && bookItems.length === 0 ? (
+                    <p className="panel-body">{t.noBooks}</p>
+                  ) : null}
+                  <ul className="plain-list">
                     {bookItems.map((book) => {
                       const course = courseItems.find((item) => item.id === book.courseId);
+                      const title = titleFor(book, bn);
                       return (
-                        <li key={book.id} className="card">
-                          <Link className="card-link" href={bookHref(book.id, here)}>
-                            <span className="card-title">{titleFor(book, bn)}</span>
+                        <li key={book.id} className="book-row">
+                          <span className="book-cover" aria-hidden="true">
+                            {title.slice(0, 1).toUpperCase()}
+                          </span>
+                          <div className="book-info">
+                            <h3>{title}</h3>
                             {book.author ? (
-                              <span className="card-meta">
+                              <p>
                                 {t.byAuthor} {book.author}
-                              </span>
+                              </p>
+                            ) : null}
+                            {book.publisher ? (
+                              <p>
+                                {t.publisher}: {book.publisher}
+                              </p>
                             ) : null}
                             {course ? (
-                              <span className="card-meta">
+                              <p className="muted">
                                 {course.code} · {titleFor(course, bn)}
-                              </span>
+                              </p>
                             ) : null}
-                            <span className="card-open">{t.openBook} →</span>
+                          </div>
+                          <Link className="details-button" href={bookHref(book.id, here)}>
+                            {t.viewDetails} →
                           </Link>
                         </li>
                       );
                     })}
                   </ul>
                 </section>
-              </>
+                <p className="tip-note">{t.materialsSoon}</p>
+              </div>
+            ) : null}
+
+            {tab === 'courses' && syllabus ? (
+              <div role="tabpanel" id="panel-courses" aria-labelledby="tab-courses">
+                <section className="panel" aria-labelledby="courses-title">
+                  <div className="panel-head">
+                    <h2 id="courses-title">{t.courseListTitle}</h2>
+                  </div>
+                  <div className="panel-body">
+                    {courses.status === 'loading' ? <p className="muted">{t.loading}</p> : null}
+                    {courses.status === 'error' ? <p>{t.loadError}</p> : null}
+                    {courses.status === 'ok' && courseItems.length === 0 ? (
+                      <p>{t.noCourses}</p>
+                    ) : null}
+                    <ul className="card-list">
+                      {courseItems.map((course) => (
+                        <li key={course.id} className="card">
+                          <span className="card-code">{course.code}</span>
+                          <span className="card-title">{titleFor(course, bn)}</span>
+                          <span className="card-meta">
+                            {course.credits !== null ? `${t.credits}: ${course.credits}` : null}
+                            {course.credits !== null && course.marks !== null ? ' · ' : null}
+                            {course.marks !== null ? `${t.marks}: ${course.marks}` : null}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </section>
+              </div>
+            ) : null}
+
+            {tab === 'resources' ? (
+              <div role="tabpanel" id="panel-resources" aria-labelledby="tab-resources">
+                <p className="tip-note">{t.materialsSoon}</p>
+              </div>
             ) : null}
           </>
         )}

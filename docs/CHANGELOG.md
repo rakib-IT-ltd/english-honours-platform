@@ -20,6 +20,12 @@
 
 ### Added
 
+- Syllabus page redesigned to the owner's mockup: breadcrumb, university banner (initials badge,
+  no logo), tabs (Syllabus & Book List, Course Details, Study Resources), syllabus overview, book list
+  with course filter and "View Details". Phone menu (hamburger). Sample names, authors, publishers,
+  credits and marks from the mockup are NOT used; only real database content is shown.
+- `scripts/apply-patch.ps1`: applies the newest patch, commits and pushes from any folder.
+
 - Student journey (ADR 0005): choosing a level on the home page opens `/syllabus` (university,
   department, program, level, current syllabus version, courses, book list); choosing a book opens
   `/book`. New tables `Course` and `Book` with a `PublicationStatus` (Draft, In review, Approved,

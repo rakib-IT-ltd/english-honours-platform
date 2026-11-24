@@ -97,6 +97,23 @@ export interface Strings {
   materialsSoon: string;
   selectionMissing: string;
   chooseAgain: string;
+  menu: string;
+  selectedUniversity: string;
+  universityLabel: string;
+  exploreLine: string;
+  tabSyllabus: string;
+  tabCourses: string;
+  tabResources: string;
+  overviewTitle: string;
+  statProgram: string;
+  statVersion: string;
+  statCourses: string;
+  statBooks: string;
+  verifiedNote: string;
+  unverifiedNote: string;
+  allCourses: string;
+  viewDetails: string;
+  filterByCourse: string;
 }
 
 // NOTE: Bangla wording is a first draft and must be reviewed by a language/academic reviewer.
@@ -211,6 +228,24 @@ export const STRINGS: Record<SupportedLanguage, Strings> = {
     materialsSoon: 'Notes, summaries and questions for this book are coming soon.',
     selectionMissing: 'Please choose your university, program and level first.',
     chooseAgain: 'Change selection',
+    menu: 'Menu',
+    selectedUniversity: 'Selected University',
+    universityLabel: 'University',
+    exploreLine: 'Explore your syllabus and book list',
+    tabSyllabus: 'Syllabus & Book List',
+    tabCourses: 'Course Details',
+    tabResources: 'Study Resources',
+    overviewTitle: 'Syllabus Overview',
+    statProgram: 'Program',
+    statVersion: 'Syllabus version',
+    statCourses: 'Courses',
+    statBooks: 'Books',
+    verifiedNote: 'This syllabus version has been checked against an official university document.',
+    unverifiedNote:
+      'This syllabus version has not been checked against an official university document yet.',
+    allCourses: 'All courses',
+    viewDetails: 'View Details',
+    filterByCourse: 'Show books of',
   },
   bn: {
     brand: 'ইংরেজি অনার্স',
@@ -321,5 +356,22 @@ export const STRINGS: Record<SupportedLanguage, Strings> = {
     materialsSoon: 'এই বইয়ের নোট, সারসংক্ষেপ ও প্রশ্ন শীঘ্রই আসছে।',
     selectionMissing: 'অনুগ্রহ করে আগে আপনার বিশ্ববিদ্যালয়, প্রোগ্রাম ও স্তর নির্বাচন করুন।',
     chooseAgain: 'নির্বাচন পরিবর্তন করুন',
+    menu: 'মেনু',
+    selectedUniversity: 'নির্বাচিত বিশ্ববিদ্যালয়',
+    universityLabel: 'বিশ্ববিদ্যালয়',
+    exploreLine: 'আপনার সিলেবাস ও বইয়ের তালিকা দেখুন',
+    tabSyllabus: 'সিলেবাস ও বইয়ের তালিকা',
+    tabCourses: 'কোর্সের বিবরণ',
+    tabResources: 'পড়ার উপকরণ',
+    overviewTitle: 'সিলেবাসের সারসংক্ষেপ',
+    statProgram: 'প্রোগ্রাম',
+    statVersion: 'সিলেবাসের সংস্করণ',
+    statCourses: 'কোর্স',
+    statBooks: 'বই',
+    verifiedNote: 'এই সিলেবাস সংস্করণটি বিশ্ববিদ্যালয়ের অফিসিয়াল নথির সাথে যাচাই করা হয়েছে।',
+    unverifiedNote: 'এই সিলেবাস সংস্করণটি এখনও বিশ্ববিদ্যালয়ের অফিসিয়াল নথির সাথে যাচাই করা হয়নি।',
+    allCourses: 'সব কোর্স',
+    viewDetails: 'বিস্তারিত দেখুন',
+    filterByCourse: 'যে কোর্সের বই দেখাবেন',
   },
 };

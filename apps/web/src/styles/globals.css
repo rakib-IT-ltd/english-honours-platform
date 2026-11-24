@@ -675,12 +675,6 @@ a.link-button {
     padding-right: 1rem;
   }
 
-  .main-nav {
-    order: 3;
-    width: 100%;
-    gap: 1.2rem;
-  }
-
   .footer-inner {
     flex-direction: column;
     align-items: flex-start;
@@ -703,23 +697,6 @@ a.link-button {
 
   .brand-tagline {
     font-size: 0.78rem;
-  }
-
-  .header-actions {
-    margin-left: auto;
-  }
-
-  /* One scrollable row instead of a tall wrapped menu; every link is a 44px-high tap target. */
-  .main-nav {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    gap: 1.4rem;
-    padding-bottom: 0.1rem;
-  }
-
-  .main-nav a {
-    flex: none;
-    padding: 0.6rem 0;
   }
 
   .pill-button {
@@ -813,4 +790,397 @@ a.link-button {
 
 .syllabus-page a.card-link {
   color: inherit;
+}
+
+/* ---------- Phone menu (hamburger) ---------- */
+.menu-button {
+  display: none;
+  width: 48px;
+  height: 48px;
+  margin-left: auto;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-button span,
+.menu-button span::before,
+.menu-button span::after {
+  display: block;
+  width: 28px;
+  height: 3px;
+  border-radius: 2px;
+  background: #fff;
+  content: '';
+  position: relative;
+}
+
+.menu-button span::before {
+  position: absolute;
+  top: -9px;
+}
+
+.menu-button span::after {
+  position: absolute;
+  top: 9px;
+}
+
+@media (max-width: 800px) {
+  .menu-button {
+    display: flex;
+  }
+
+  .main-nav,
+  .header-actions {
+    display: none;
+    width: 100%;
+  }
+
+  .is-open .main-nav,
+  .is-open .header-actions {
+    display: flex;
+  }
+
+  .is-open .main-nav {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .is-open .main-nav a {
+    padding: 0.8rem 0;
+    min-height: 44px;
+    border-bottom: 1px solid #25457f;
+  }
+
+  .is-open .header-actions {
+    flex-wrap: wrap;
+    padding-bottom: 0.6rem;
+  }
+}
+
+/* ---------- Syllabus page layout ---------- */
+.syl-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 1rem 2rem;
+}
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.6rem;
+  list-style: none;
+  margin: 0;
+  padding: 0.9rem 0;
+  font-size: 0.98rem;
+}
+
+.breadcrumb li + li::before {
+  content: '›';
+  margin-right: 0.6rem;
+  color: var(--muted);
+}
+
+.breadcrumb a {
+  color: var(--navy-2);
+  font-weight: 600;
+}
+
+.syl-banner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.1rem 1.2rem;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: linear-gradient(120deg, #f4f8ff, #dcebfb);
+  overflow: hidden;
+}
+
+/* Initials only: official logos are used only with the university's permission. */
+.uni-badge {
+  flex: none;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--navy);
+  color: #fff;
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 1.5rem;
+  border: 4px solid #fff;
+  box-shadow: 0 0 0 2px var(--gold);
+}
+
+.syl-banner-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.selected-chip {
+  display: inline-block;
+  padding: 0.25rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--navy);
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.syl-banner h1 {
+  margin: 0.5rem 0 0.1rem;
+  font-size: 1.9rem;
+  line-height: 1.15;
+}
+
+.syl-banner p {
+  margin: 0;
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--navy-2);
+  font-size: 1.1rem;
+}
+
+.books-art {
+  flex: none;
+  width: 150px;
+  height: auto;
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  margin: 1rem 0;
+}
+
+.tab {
+  min-height: 52px;
+  padding: 0.6rem 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: 12px 12px 0 0;
+  background: var(--band);
+  color: var(--navy);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tab[aria-selected='true'] {
+  background: var(--navy);
+  color: #fff;
+  border-color: var(--navy);
+  box-shadow: inset 0 -4px 0 var(--gold);
+}
+
+.panel {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 1.2rem;
+  background: #fff;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  padding: 0.8rem 1.1rem;
+  background: var(--navy);
+  color: #fff;
+}
+
+.panel-head h2 {
+  margin: 0;
+  color: #fff;
+  font-size: 1.35rem;
+}
+
+.panel-head select {
+  min-height: 40px;
+  max-width: 100%;
+  border-radius: 999px;
+  border: 0;
+  padding: 0 0.9rem;
+  font: inherit;
+  font-weight: 600;
+  background: #fff;
+  color: var(--navy);
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.7rem;
+  padding: 0.9rem;
+}
+
+.stat {
+  padding: 0.7rem 0.9rem;
+  border-radius: 10px;
+  background: var(--blue-tint);
+}
+
+.stat:nth-child(n + 3) {
+  background: #fdf3e0;
+}
+
+.stat span {
+  display: block;
+  color: var(--navy-2);
+  font-size: 0.92rem;
+}
+
+.stat strong {
+  display: block;
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  color: var(--navy);
+  overflow-wrap: anywhere;
+}
+
+.info-note {
+  margin: 0 0.9rem 0.9rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 10px;
+  background: var(--blue-tint);
+  color: var(--navy);
+}
+
+.book-row {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin: 0.7rem;
+  padding: 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+/* A plain tile with the book's first letter; real covers need the publisher's permission. */
+.book-cover {
+  flex: none;
+  width: 64px;
+  height: 84px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(160deg, var(--navy-2), var(--navy));
+  color: #f7e4b3;
+  font-family: var(--serif);
+  font-size: 1.8rem;
+  font-weight: 700;
+  border-bottom: 4px solid var(--gold);
+}
+
+.book-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.book-info h3 {
+  margin: 0 0 0.2rem;
+  font-size: 1.2rem;
+  overflow-wrap: anywhere;
+}
+
+.book-info p {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.book-info .muted {
+  color: var(--muted);
+}
+
+.details-button {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 1rem;
+  border-radius: 10px;
+  background: var(--navy);
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.panel-body {
+  padding: 0.9rem;
+}
+
+.panel-body .card-list {
+  margin: 0;
+}
+
+.tip-note {
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--blue-tint);
+  color: var(--navy);
+}
+
+@media (max-width: 560px) {
+  .syl-banner {
+    gap: 0.7rem;
+    padding: 0.9rem;
+  }
+
+  .uni-badge {
+    width: 56px;
+    height: 56px;
+    font-size: 1.15rem;
+  }
+
+  .syl-banner h1 {
+    font-size: 1.5rem;
+  }
+
+  .books-art {
+    display: none;
+  }
+
+  .tab {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.25rem;
+  }
+
+  .book-row {
+    flex-wrap: wrap;
+  }
+
+  .book-info {
+    flex-basis: calc(100% - 90px);
+  }
+
+  .details-button {
+    width: 100%;
+  }
+
+  .stat strong {
+    font-size: 1.05rem;
+  }
+}
+
+.plain-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.panel-head .badge {
+  background: #fff;
 }

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { AppProviders } from '../src/components/providers/AppProviders';
 import { BookView } from '../src/components/syllabus/BookView';
 import { SyllabusView } from '../src/components/syllabus/SyllabusView';
@@ -109,14 +109,19 @@ describe('Syllabus page', () => {
     search.value = 'university=u1&program=p1&level=l1';
     const fetchMock = stubApi();
     wrap(<SyllabusView />);
-    await waitFor(() => expect(screen.getByText('Department of English')).toBeTruthy());
-    expect(screen.getByText('Test University A')).toBeTruthy();
-    await waitFor(() => expect(screen.getByText('Test Course')).toBeTruthy());
+    await waitFor(() => expect(screen.getByText(/Department of English/)).toBeTruthy());
+    expect(screen.getAllByText(/Test University A/).length).toBeGreaterThan(0);
+    await waitFor(() => expect(screen.getByText('Syllabus Overview')).toBeTruthy());
     expect(screen.getByText('Not yet verified')).toBeTruthy();
-    const link = await screen.findByRole('link', { name: /Test Book/ });
+    const link = await screen.findByRole('link', { name: /View Details/ });
+    expect(screen.getByRole('heading', { name: 'Test Book' })).toBeTruthy();
+    expect(screen.getByText(/Test Author/)).toBeTruthy();
     expect(link.getAttribute('href')).toContain('/book?id=b1&back=');
     const urls = fetchMock.mock.calls.map((call) => call[0]);
     expect(urls).toContain('http://api.test/api/v1/books?syllabusId=s1');
+    fireEvent.click(screen.getByRole('tab', { name: 'Course Details' }));
+    expect(await screen.findByText('Test Course')).toBeTruthy();
+    expect(screen.getByText('Credits: 4')).toBeTruthy();
   });
 
   it('shows honest empty states when nothing is published', async () => {
@@ -125,11 +130,12 @@ describe('Syllabus page', () => {
     stubApi({ '/courses': [], '/books': [] });
     wrap(<SyllabusView />);
     await waitFor(() =>
-      expect(
-        screen.getByText('No courses have been published for this syllabus yet.'),
-      ).toBeTruthy(),
+      expect(screen.getByText('No books have been published for this syllabus yet.')).toBeTruthy(),
     );
-    expect(screen.getByText('No books have been published for this syllabus yet.')).toBeTruthy();
+    fireEvent.click(screen.getByRole('tab', { name: 'Course Details' }));
+    expect(screen.getByText('No courses have been published for this syllabus yet.')).toBeTruthy();
+    fireEvent.click(screen.getByRole('tab', { name: 'Study Resources' }));
+    expect(screen.getByText(/coming soon/)).toBeTruthy();
   });
 
   it('asks for a selection when the address has none, without calling the API', () => {
