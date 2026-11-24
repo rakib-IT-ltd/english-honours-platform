@@ -20,6 +20,14 @@
 
 ### Added
 
+- NU English Honours 2024-2025 subjects (names and codes only): 8 + 7 + 8 + 9 = 32 courses for
+  Honours 1st-4th Year, loaded by `pnpm db:load-content` from
+  `database/prisma/content/nu-english-honours-2024-2025.sql`. Source: a list from the
+  janteparo.com website supplied by the owner - NOT an official NU document - so every syllabus
+  version is `UNVERIFIED` and the source is recorded as `OTHER`. Credits, marks and books are not
+  loaded (not provided). The owner chose to show these to students labelled "Not yet verified".
+  The Codespaces script now runs `db:load-content` after the seed.
+
 - Syllabus page redesigned to the owner's mockup: breadcrumb, university banner (initials badge,
   no logo), tabs (Syllabus & Book List, Course Details, Study Resources), syllabus overview, book list
   with course filter and "View Details". Phone menu (hamburger). Sample names, authors, publishers,
