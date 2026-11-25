@@ -30,6 +30,10 @@
 
 ### Added
 
+- NU English Honours **First Year 2024-2025** loaded from the official NU PDF (10 courses with credits,
+  marks, class hours and 65 listed books), shown as "Not yet verified"; original stored with SHA-256.
+  Years 2-4 stay hidden until official documents are supplied.
+
 - NU English Masters (one-year), Masters Final, session 2013-2014 : 9 papers
   with credits (total 32) and class hours, and the 34 texts listed in the detailed syllabus as the
   book list. Source is the OFFICIAL NU syllabus document, stored with its SHA-256 under
