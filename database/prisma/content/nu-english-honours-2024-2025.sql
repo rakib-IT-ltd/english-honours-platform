@@ -8,7 +8,12 @@
 --     API only counts OFFICIAL_UNIVERSITY_DOCUMENT sources toward verification).
 --   * Only subject names and codes are included. Credits, marks and books are NOT known and stay
 --     empty. Nothing here was added from memory.
---   * The owner chose to show these subjects to students now, clearly labelled "Not yet verified".
+--   * UPDATE 2026-11-25: the official NU First Year syllabus for 2024-2025 (nu.ac.bd, published
+--     2025-11-12) differs from this list (for example it has History of Bangladesh: Language,
+--     Culture and Identity 219901, ICT 219903 and ICT Lab 219904, and no Introduction to Social Work).
+--     This list is therefore NOT trusted for session 2024-2025: the courses are loaded as DRAFT
+--     (hidden from students) and the syllabus versions are not "current". Years 2-4 have no official
+--     2024-2025 document yet. Replace with the official documents when supplied.
 --   * Wording is as supplied; only trailing full stops and a website link were removed.
 --
 -- Safe to run repeatedly (existing rows are left alone). Requires the NU university and the
@@ -37,7 +42,7 @@ INSERT INTO "Syllabus" (
 )
 SELECT gen_random_uuid()::text, u.id, p.id, l.id, s.id, '2024-2025', 'UNVERIFIED',
   'Subject names and codes only, from a secondary (non-official) list supplied by the project owner. Credits, marks and books not loaded. Not checked against an official NU document.',
-  true, now()
+  false, now()
 FROM "University" u
 JOIN "AcademicProgram" p ON p."universityId" = u.id AND p.code = 'english-honours'
 JOIN "AcademicSession" s ON s."universityId" = u.id AND s.label = '2024-2025'
@@ -62,7 +67,7 @@ WHERE sy."versionLabel" = '2024-2025'
   );
 
 INSERT INTO "Course" ("id", "syllabusId", "code", "titleEn", "sequence", "publicationStatus", "updatedAt")
-SELECT gen_random_uuid()::text, sy.id, v.code, v.title, v.sequence, 'PUBLISHED', now()
+SELECT gen_random_uuid()::text, sy.id, v.code, v.title, v.sequence, 'DRAFT', now()
 FROM (VALUES
     ('HONOURS_1', '211101', 'English Reading Skills', 1),
     ('HONOURS_1', '211103', 'English Writing Skills', 2),

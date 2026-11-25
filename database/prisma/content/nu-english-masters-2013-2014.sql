@@ -8,15 +8,18 @@
 -- academic-content/syllabus/national-university/2013-2014/english-masters/masters-final/
 -- (SHA-256 99b1acd2aa38832c9c6679f428caa308f4f0cf7ea2fb3dec8a8c222ab020928a).
 --
--- STATUS: loaded as UNVERIFIED with the official document attached. It becomes VERIFIED only when
--- a named reviewer has compared this file with the official document and the verification is
--- recorded (POST /syllabuses/{id}/verify). Nothing is verified implicitly.
+-- STATUS: loaded as UNVERIFIED with the official document attached. The owner confirmed the
+-- transcription on 2026-11-25; that is recorded by nu-english-masters-2013-2014.verification.sql
+-- (which runs after this file). Nothing is verified implicitly.
 --
 -- IMPORTANT: this syllabus is effective from session 2013-2014 only. It is NOT assumed to apply to
 -- later sessions; the website shows the session next to it.
 --
--- Wording, spelling and punctuation are as printed in the document (including spellings such as
--- "Heany", "Cresyde" and "Tennessee William"); corrections need the owner's approval.
+-- Wording is as printed in the document, except five misspelled names the owner approved
+-- correcting on 2026-11-25 (printed -> corrected): "Troilus and Cresyde" -> "Troilus and
+-- Criseyde"; "The Nuns Priests Tale" -> "The Nun's Priest's Tale"; "Seamus Heany" -> "Seamus Heaney";
+-- "Eugene O' Neil" -> "Eugene O'Neill"; "Tennessee William" -> "Tennessee Williams". The stored
+-- original document keeps the printed spellings.
 -- Marks are not stated in the document, so they stay empty. "Class Hours" are stored as given.
 -- The texts listed under each paper become the book list (author as printed; any edition or
 -- selection note is kept in the description). The syllabus gives no publisher, edition or year.
@@ -96,8 +99,8 @@ INSERT INTO "Book" ("id", "courseId", "titleEn", "author", "description", "seque
 SELECT gen_random_uuid()::text, c.id, v.title, v.author, v.description, v.sequence, 'PUBLISHED', now()
 FROM (VALUES
     ('311101', '''The General Prologue'' to The Canterbury Tales', 'Chaucer', NULL, 1),
-    ('311101', '''The Nuns Priests Tale''', 'Chaucer', NULL, 2),
-    ('311101', 'Troilus and Cresyde', 'Chaucer', NULL, 3),
+    ('311101', '''The Nun''s Priest''s Tale''', 'Chaucer', NULL, 2),
+    ('311101', 'Troilus and Criseyde', 'Chaucer', NULL, 3),
     ('311103', 'Hamlet', 'W. Shakespeare', NULL, 4),
     ('311103', 'Othello', 'W. Shakespeare', NULL, 5),
     ('311103', 'King Lear', 'W. Shakespeare', NULL, 6),
@@ -109,11 +112,11 @@ FROM (VALUES
     ('311105', 'Poems', 'Robert Frost', 'as in Norton Anthology - except the pieces included in the Honours Course', 12),
     ('311105', 'Poems', 'W. H. Auden', 'as in Norton Anthology', 13),
     ('311105', 'Poems', 'Dylan Thomas', 'as in Norton Anthology excluding ''Fern Hill''', 14),
-    ('311105', 'Poems', 'Seamus Heany', 'as in Norton', 15),
+    ('311105', 'Poems', 'Seamus Heaney', 'as in Norton', 15),
     ('311107', 'You Never Can Tell', 'G.B. Shaw', NULL, 16),
-    ('311107', 'Desire Under the Elms', 'Eugene O'' Neil', NULL, 17),
+    ('311107', 'Desire Under the Elms', 'Eugene O''Neill', NULL, 17),
     ('311107', 'Death of a Salesman', 'A. Miller', NULL, 18),
-    ('311107', 'The Glass Menagerie', 'Tennessee William', NULL, 19),
+    ('311107', 'The Glass Menagerie', 'Tennessee Williams', NULL, 19),
     ('311109', 'The Old Man and the Sea', 'E. Hemingway', NULL, 20),
     ('311109', 'Lord of the Flies', 'W. Golding', NULL, 21),
     ('311109', 'The Scarlet Letter', 'N. Hawthorne', NULL, 22),

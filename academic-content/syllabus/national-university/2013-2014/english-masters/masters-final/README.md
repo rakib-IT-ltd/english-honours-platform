@@ -37,7 +37,8 @@ syllabus, if the owner obtains one, is added as a new syllabus version, not by e
 
 Total credits as printed: 32. Marks are not stated in the document.
 
-## Spellings kept as printed (owner may approve corrections)
+## Spellings corrected with the owner's approval (the stored original keeps the printed form)
 
-"Seamus Heany" (Heaney), "Troilus and Cresyde" (Criseyde), "The Nuns Priests Tale" (Nun's Priest's),
-"Eugene O' Neil" (O'Neill), "Tennessee William" (Williams).
+Printed -> corrected: "Seamus Heany" -> Heaney; "Troilus and Cresyde" -> Criseyde;
+"The Nuns Priests Tale" -> The Nun's Priest's Tale; "Eugene O' Neil" -> O'Neill;
+"Tennessee William" -> Williams.

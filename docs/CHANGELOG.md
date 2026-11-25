@@ -18,6 +18,16 @@
 - `academic-content/syllabus/` reorganised to `<university>/<session>/<program>/<level>`; the DU
   folder holds only a README.
 
+### Changed
+
+- NU English Masters 2013-2014 is now **Verified** (owner confirmed the transcription; recorded in
+  `SyllabusVerification`) and five misspelled names were corrected with the owner's approval
+  (the stored original document keeps the printed spellings).
+- NU English Honours "2024-2025" subject list is **hidden** (courses DRAFT, syllabus not current):
+  the official NU First Year 2024-2025 syllabus (nu.ac.bd, published 2025-11-12) lists different
+  courses (e.g. 219901 History of Bangladesh: Language, Culture and Identity, 219903 ICT, 219904 ICT
+  Lab) than the secondary-website list that had been loaded. Waiting for the official documents.
+
 ### Added
 
 - NU English Masters (one-year), Masters Final, session 2013-2014 : 9 papers

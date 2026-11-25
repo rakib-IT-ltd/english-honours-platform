@@ -21,10 +21,10 @@ legacy syllabuses are not assumed to be current.
 
 ## Loaded content and its status
 
-| University | Program                    | Session   | Levels               | What is loaded                                         | Status                                                                                           |
-| ---------- | -------------------------- | --------- | -------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
-| NU         | English Masters (one-year) | 2013-2014 | Masters Final        | 9 papers (32 credits, class hours) and 34 listed texts | **Unverified**: official NU document attached; awaiting reviewer comparison                      |
-| NU         | English Honours            | 2024-2025 | Honours 1st-4th Year | 32 subject names and codes                             | **Unverified**: from a secondary website list supplied by the owner, not an official NU document |
+| University | Program                    | Session     | Levels               | What is loaded                                         | Status                                                                                                                              |
+| ---------- | -------------------------- | ----------- | -------------------- | ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| NU         | English Masters (one-year) | 2013-2014   | Masters Final        | 9 papers (32 credits, class hours) and 34 listed texts | **Verified** 2026-11-25 (owner confirmed against the official NU document)                                                          |
+| NU         | English Honours            | "2024-2025" | Honours 1st-4th Year | 32 subject names and codes                             | **Hidden (draft)**: secondary website list, contradicted by the official NU First Year 2024-2025 syllabus; needs official documents |
 
 Loaded from `database/prisma/content/*.sql` with `pnpm db:load-content`. To mark a version verified,
 add the official NU document as a `SyllabusSource` (`OFFICIAL_UNIVERSITY_DOCUMENT`), compare every

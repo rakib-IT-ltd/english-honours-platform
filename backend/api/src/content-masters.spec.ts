@@ -45,3 +45,39 @@ describe('NU English Masters 2013-2014 content file', () => {
     expect(sql).toContain(hash);
   });
 });
+
+describe('NU English Masters 2013-2014 follow-up files', () => {
+  const read = (name: string) =>
+    readFileSync(fileURLToPath(new URL(`database/prisma/content/${name}`, root)), 'utf8');
+
+  it('uses the corrected spellings in the main file', () => {
+    expect(code).toContain('Troilus and Criseyde');
+    expect(code).toContain('Seamus Heaney');
+    expect(code).toContain("Eugene O''Neill");
+    expect(code).toContain('Tennessee Williams');
+    expect(code).not.toMatch(/Cresyde|Heany|Tennessee William'/);
+  });
+
+  it('verifies only a syllabus that has an official source, and records who/why', () => {
+    const verification = read('nu-english-masters-2013-2014.verification.sql');
+    expect(verification).toContain('OFFICIAL_UNIVERSITY_DOCUMENT');
+    expect(verification).toContain('INSERT INTO "SyllabusVerification"');
+    expect(verification).toContain("'VERIFIED'");
+  });
+
+  it('runs the corrections before, and the verification after, the main file', () => {
+    const names = [
+      'nu-english-masters-2013-2014.corrections.sql',
+      'nu-english-masters-2013-2014.sql',
+      'nu-english-masters-2013-2014.verification.sql',
+    ];
+    expect([...names].sort()).toEqual(names);
+  });
+
+  it('keeps the unofficial Honours list hidden (draft, not current)', () => {
+    const honours = read('nu-english-honours-2024-2025.sql');
+    expect(honours).toContain("'DRAFT'");
+    expect(honours).not.toContain("'PUBLISHED'");
+    expect(read('nu-english-honours-2024-2025.unpublish.sql')).toContain('"isCurrent" = false');
+  });
+});
