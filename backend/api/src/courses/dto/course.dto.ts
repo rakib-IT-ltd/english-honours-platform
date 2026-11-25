@@ -9,6 +9,7 @@ export class CourseDto {
   @ApiProperty({ type: String, nullable: true }) titleBn!: string | null;
   @ApiProperty({ type: Number, nullable: true }) credits!: number | null;
   @ApiProperty({ type: Number, nullable: true }) marks!: number | null;
+  @ApiProperty({ type: Number, nullable: true }) classHours!: number | null;
   @ApiProperty({ type: Number }) sequence!: number;
 }
 

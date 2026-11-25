@@ -14,9 +14,18 @@ export type AcademicLevel = Named & { code: string; sequence: number };
 
 export interface SyllabusSummary {
   id: string;
+  academicSessionId: string;
   versionLabel: string;
   verificationStatus: VerificationStatus;
   isCurrent: boolean;
+}
+
+export interface AcademicSessionItem {
+  id: string;
+  universityId: string;
+  label: string;
+  startYear: number;
+  endYear: number;
 }
 
 export interface Course {
@@ -27,6 +36,7 @@ export interface Course {
   titleBn: string | null;
   credits: number | null;
   marks: number | null;
+  classHours: number | null;
   sequence: number;
 }
 

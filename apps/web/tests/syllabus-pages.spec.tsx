@@ -43,8 +43,21 @@ const routes: Record<string, unknown> = {
       nameBn: null,
     },
   ],
+  '/academic-sessions/ss1': {
+    id: 'ss1',
+    universityId: 'u1',
+    label: 'TEST 2099-2100',
+    startYear: 2099,
+    endYear: 2100,
+  },
   '/syllabuses': [
-    { id: 's1', versionLabel: 'TEST-v1', verificationStatus: 'UNVERIFIED', isCurrent: true },
+    {
+      id: 's1',
+      academicSessionId: 'ss1',
+      versionLabel: 'TEST-v1',
+      verificationStatus: 'UNVERIFIED',
+      isCurrent: true,
+    },
   ],
   '/courses': [
     {
@@ -55,6 +68,7 @@ const routes: Record<string, unknown> = {
       titleBn: null,
       credits: 4,
       marks: null,
+      classHours: 120,
       sequence: 1,
     },
   ],
@@ -112,6 +126,7 @@ describe('Syllabus page', () => {
     await waitFor(() => expect(screen.getByText(/Department of English/)).toBeTruthy());
     expect(screen.getAllByText(/Test University A/).length).toBeGreaterThan(0);
     await waitFor(() => expect(screen.getByText('Syllabus Overview')).toBeTruthy());
+    expect(await screen.findByText(/Session: TEST 2099-2100/)).toBeTruthy();
     expect(screen.getByText('Not yet verified')).toBeTruthy();
     const link = await screen.findByRole('link', { name: /View Details/ });
     expect(screen.getByRole('heading', { name: 'Test Book' })).toBeTruthy();
@@ -121,7 +136,7 @@ describe('Syllabus page', () => {
     expect(urls).toContain('http://api.test/api/v1/books?syllabusId=s1');
     fireEvent.click(screen.getByRole('tab', { name: 'Course Details' }));
     expect(await screen.findByText('Test Course')).toBeTruthy();
-    expect(screen.getByText('Credits: 4')).toBeTruthy();
+    expect(screen.getByText('Credits: 4 · Class hours: 120')).toBeTruthy();
   });
 
   it('shows honest empty states when nothing is published', async () => {

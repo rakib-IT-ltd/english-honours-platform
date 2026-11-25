@@ -291,6 +291,8 @@ model Course {
   titleBn           String?
   credits           Float?
   marks             Int?
+  /// Class hours as printed in the official syllabus (e.g. 120). Optional.
+  classHours        Int?
   sequence          Int               @default(0)
   publicationStatus PublicationStatus @default(DRAFT)
   createdAt         DateTime          @default(now())

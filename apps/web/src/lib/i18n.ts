@@ -114,6 +114,9 @@ export interface Strings {
   allCourses: string;
   viewDetails: string;
   filterByCourse: string;
+  sessionLabel: string;
+  classHoursLabel: string;
+  sessionNote: string;
 }
 
 // NOTE: Bangla wording is a first draft and must be reviewed by a language/academic reviewer.
@@ -246,6 +249,10 @@ export const STRINGS: Record<SupportedLanguage, Strings> = {
     allCourses: 'All courses',
     viewDetails: 'View Details',
     filterByCourse: 'Show books of',
+    sessionLabel: 'Session',
+    classHoursLabel: 'Class hours',
+    sessionNote:
+      'This syllabus applies to the session shown above. If your session is different, check with your department.',
   },
   bn: {
     brand: 'ইংরেজি অনার্স',
@@ -373,5 +380,9 @@ export const STRINGS: Record<SupportedLanguage, Strings> = {
     allCourses: 'সব কোর্স',
     viewDetails: 'বিস্তারিত দেখুন',
     filterByCourse: 'যে কোর্সের বই দেখাবেন',
+    sessionLabel: 'সেশন',
+    classHoursLabel: 'ক্লাস ঘণ্টা',
+    sessionNote:
+      'এই সিলেবাস উপরে দেখানো সেশনের জন্য প্রযোজ্য। আপনার সেশন ভিন্ন হলে আপনার বিভাগের সাথে যোগাযোগ করুন।',
   },
 };

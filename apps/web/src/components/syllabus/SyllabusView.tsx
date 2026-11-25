@@ -12,6 +12,7 @@ import {
   titleFor,
   type AcademicLevel,
   type AcademicProgram,
+  type AcademicSessionItem,
   type Book,
   type Course,
   type Department,
@@ -60,6 +61,11 @@ export function SyllabusView() {
       : null,
   );
   const syllabus = syllabuses.status === 'ok' ? syllabuses.data[0] : undefined;
+  const session = useApiItem<AcademicSessionItem>(
+    base && syllabus
+      ? buildApiUrl(base, `academic-sessions/${encodeURIComponent(syllabus.academicSessionId)}`)
+      : null,
+  );
   const courses = useApiList<Course>(
     base && syllabus ? buildApiUrl(base, 'courses', { syllabusId: syllabus.id }) : null,
   );
@@ -194,6 +200,11 @@ export function SyllabusView() {
                       {t.departmentLabel}: {displayName(departmentName, language)}
                     </p>
                   ) : null}
+                  {session.status === 'ok' ? (
+                    <p className="info-note">
+                      {t.sessionLabel}: {session.data.label}. {t.sessionNote}
+                    </p>
+                  ) : null}
                   <p className="info-note">
                     {syllabus.verificationStatus === 'VERIFIED' ? t.verifiedNote : t.unverifiedNote}
                   </p>
@@ -281,9 +292,15 @@ export function SyllabusView() {
                           <span className="card-code">{course.code}</span>
                           <span className="card-title">{titleFor(course, bn)}</span>
                           <span className="card-meta">
-                            {course.credits !== null ? `${t.credits}: ${course.credits}` : null}
-                            {course.credits !== null && course.marks !== null ? ' · ' : null}
-                            {course.marks !== null ? `${t.marks}: ${course.marks}` : null}
+                            {[
+                              course.credits !== null ? `${t.credits}: ${course.credits}` : null,
+                              course.marks !== null ? `${t.marks}: ${course.marks}` : null,
+                              course.classHours !== null
+                                ? `${t.classHoursLabel}: ${course.classHours}`
+                                : null,
+                            ]
+                              .filter(Boolean)
+                              .join(' · ')}
                           </span>
                         </li>
                       ))}

@@ -20,6 +20,14 @@
 
 ### Added
 
+- NU English Masters (one-year), Masters Final, session 2013-2014 : 9 papers
+  with credits (total 32) and class hours, and the 34 texts listed in the detailed syllabus as the
+  book list. Source is the OFFICIAL NU syllabus document, stored with its SHA-256 under
+  `academic-content/syllabus/national-university/2013-2014/english-masters/masters-final/`. Loaded as
+  `UNVERIFIED` until a named reviewer compares it with the original. Not assumed to apply to later
+  sessions: the syllabus page now shows the session. New optional `Course.classHours` (migration
+  `20261124100000_course_class_hours`). Marks are not stated in the document and stay empty.
+
 - NU English Honours 2024-2025 subjects (names and codes only): 8 + 7 + 8 + 9 = 32 courses for
   Honours 1st-4th Year, loaded by `pnpm db:load-content` from
   `database/prisma/content/nu-english-honours-2024-2025.sql`. Source: a list from the
