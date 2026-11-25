@@ -8,8 +8,8 @@
 -- academic-content/syllabus/national-university/2024-2025/english-honours/honours-1st-year/
 -- (SHA-256 2f4a8912863de132863ec5194fdc6f9eca3da63ad0800b244d8079597d9f50a3).
 --
--- STATUS: loaded as UNVERIFIED with the official document attached; it is NOT verified until the
--- owner confirms it (a separate verification file will record that). Only the First Year is loaded:
+-- STATUS: loaded as UNVERIFIED with the official document attached; verification is recorded by
+-- nu-english-honours-2024-2025.zz-verification.sql (owner's instruction of 2026-11-25). Only the First Year is loaded:
 -- no official 2nd/3rd/4th year document has been supplied, and nothing is assumed for them.
 --
 -- Runs AFTER nu-english-honours-2024-2025.sql and .unpublish.sql (file-name order), which hid the

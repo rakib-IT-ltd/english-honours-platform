@@ -30,6 +30,11 @@
 
 ### Added
 
+- NU English Honours **Second Year 2024-2025** loaded from the official NU PDF (10 papers, 850 marks /
+  34 credits; class hours and 55 English-language books for the 6 detailed papers). First and Second
+  Year are now marked **Verified** on the owner's instruction (`zz-verification.sql`); 3rd and 4th
+  Year stay hidden and unverified.
+
 - NU English Honours **First Year 2024-2025** loaded from the official NU PDF (10 courses with credits,
   marks, class hours and 65 listed books), shown as "Not yet verified"; original stored with SHA-256.
   Years 2-4 stay hidden until official documents are supplied.

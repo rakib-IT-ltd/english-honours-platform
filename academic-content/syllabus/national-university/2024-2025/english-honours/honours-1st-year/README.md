@@ -11,10 +11,10 @@ Program, Effective from the Session: 2024-2025" (35 pages; file name
 
 ## Verification record
 
-| Item                                                                  | Status                                                  |
-| --------------------------------------------------------------------- | ------------------------------------------------------- |
-| Transcription by Claude (10 courses, credits, marks, hours, 65 books) | done 2026-11-25                                         |
-| Confirmed against the original by the owner                           | **pending** (stays `UNVERIFIED` until the owner agrees) |
+| Item                                                                  | Status                                                                                                                      |
+| --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Transcription by Claude (10 courses, credits, marks, hours, 65 books) | done 2026-11-25                                                                                                             |
+| Confirmed by the owner                                                | **done 2026-11-25** (recorded as "Project owner"); status `VERIFIED` via `nu-english-honours-2024-2025.zz-verification.sql` |
 
 ## Applies to
 
