@@ -16,19 +16,25 @@ WEB_URL="https://${CODESPACE_NAME}-3000.${GITHUB_CODESPACES_PORT_FORWARDING_DOMA
 API_URL="https://${CODESPACE_NAME}-3001.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
 AUTH_URL="https://${CODESPACE_NAME}-9099.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
 
-# Stops anything left over from an earlier run (an old web server, API or emulator that is still
-# holding a port makes the new one fail or answer with "404 page can't be found").
+# Stops anything left over from an earlier run. Pressing Ctrl+C used to stop only the outer
+# "pnpm" wrappers, so the real API / web / emulator programs (and their "watch" restarters) kept
+# running in the background, kept their ports busy, and the next start failed with
+# "address already in use" or the public address answered "404 page can't be found".
+# This uses only "ss" and "pkill", which every Codespace has (lsof may be missing).
 PORTS="3000 3001 3002 4400 4401 4500 4501 9099"
 free_ports() {
-  for port in ${PORTS}; do
-    if command -v lsof >/dev/null 2>&1; then
-      lsof -ti "tcp:${port}" 2>/dev/null | xargs -r kill 2>/dev/null || true
-    elif command -v fuser >/dev/null 2>&1; then
-      fuser -k "${port}/tcp" >/dev/null 2>&1 || true
-    fi
-  done
+  # 1. Stop the restarters first, otherwise they start a new copy as soon as one is killed.
+  pkill -f "nest start" 2>/dev/null || true
+  pkill -f "start:dev" 2>/dev/null || true
+  pkill -f "dev:api" 2>/dev/null || true
   pkill -f "next dev" 2>/dev/null || true
   pkill -f "firebase-tools" 2>/dev/null || true
+  sleep 1
+  # 2. Then stop whatever still holds one of our ports.
+  for port in ${PORTS}; do
+    ss -ltnp "sport = :${port}" 2>/dev/null | grep -oE 'pid=[0-9]+' | cut -d= -f2 | sort -u |
+      xargs -r kill -9 2>/dev/null || true
+  done
   sleep 1
 }
 free_ports
@@ -74,5 +80,6 @@ done
 FIREBASE_PROJECT_ID=demo-ehp FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099 \
   CORS_ORIGINS="${WEB_URL}" pnpm dev:api &
 API_PID=$!
-trap 'kill "${API_PID}" "${EMULATOR_PID}" 2>/dev/null || true; free_ports' EXIT
+trap 'free_ports' EXIT
+trap 'exit 130' INT TERM
 pnpm dev:web
