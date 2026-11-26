@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Changed (study centre layout)
+
+- Syllabus book list: the "View Details" button is replaced by "Study centre".
+- Resource options are a wrapped, equal-size grid (no side-to-side scrolling) and are no longer shown
+  on the My Notes page; all study buttons share one height. Study centre back link returns to the
+  syllabus.
+
 ### Added (study centre)
 
 - Study centre for a book (mobile first, navy header, bottom navigation): resource tiles in the

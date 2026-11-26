@@ -56,19 +56,21 @@ export function ResourceView() {
         <Link href={studyHref(bookId)}>← {t.studyCentre}</Link>
       </p>
 
-      <div className="study-chips" role="tablist" aria-label={t.studyResources}>
-        {RESOURCES.map((entry) => (
-          <Link
-            key={entry.kind}
-            href={studyResourceHref(bookId, entry.slug)}
-            className="study-chip"
-            style={{ background: entry.background, color: entry.accent }}
-            aria-current={entry.kind === resource?.kind ? 'page' : undefined}
-          >
-            {t.resourceNames[entry.kind]}
-          </Link>
-        ))}
-      </div>
+      {isNotes ? null : (
+        <div className="study-chips" role="tablist" aria-label={t.studyResources}>
+          {RESOURCES.map((entry) => (
+            <Link
+              key={entry.kind}
+              href={studyResourceHref(bookId, entry.slug)}
+              className="study-chip"
+              style={{ background: entry.background, color: entry.accent }}
+              aria-current={entry.kind === resource?.kind ? 'page' : undefined}
+            >
+              {t.resourceNames[entry.kind]}
+            </Link>
+          ))}
+        </div>
+      )}
 
       {message ? (
         <p role="status" className="notice">

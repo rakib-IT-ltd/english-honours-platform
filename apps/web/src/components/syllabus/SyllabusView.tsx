@@ -7,7 +7,8 @@ import { useApiItem } from '../../hooks/useApiItem';
 import { useApiList } from '../../hooks/useApiList';
 import { buildApiUrl, getApiBaseUrl } from '../../lib/api';
 import { displayName, STRINGS } from '../../lib/i18n';
-import { bookHref, syllabusHref } from '../../lib/routes';
+import { studyHref, syllabusHref } from '../../lib/routes';
+import { STUDY_TEXT } from '../../lib/studyText';
 import {
   titleFor,
   type AcademicLevel,
@@ -262,8 +263,8 @@ export function SyllabusView() {
                               </p>
                             ) : null}
                           </div>
-                          <Link className="details-button" href={bookHref(book.id, here)}>
-                            {t.viewDetails} →
+                          <Link className="details-button" href={studyHref(book.id, here)}>
+                            {STUDY_TEXT[language].studyCentre} →
                           </Link>
                         </li>
                       );

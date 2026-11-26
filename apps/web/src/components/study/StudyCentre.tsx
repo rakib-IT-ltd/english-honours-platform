@@ -5,9 +5,9 @@ import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { useMyStudy } from '../../hooks/useMyStudy';
 import { useStudyBook } from '../../hooks/useStudyBook';
+import { STRINGS } from '../../lib/i18n';
 import { STUDY_TEXT } from '../../lib/studyText';
 import { studyReadHref, studyResourceHref } from '../../lib/routes';
-import { bookHref } from '../../lib/routes';
 import { titleFor } from '../../types/academic';
 import { RESOURCES, type SectionSummary } from '../../types/study';
 import { useLanguage } from '../providers/AppProviders';
@@ -36,6 +36,8 @@ export function StudyCentre() {
   const bn = language === 'bn';
   const params = useSearchParams();
   const bookId = params.get('book') ?? '';
+  const rawBack = params.get('back');
+  const backHref = rawBack && rawBack.startsWith('/') && !rawBack.startsWith('//') ? rawBack : '/';
   const { connected, book, sections } = useStudyBook(bookId);
   const mine = useMyStudy(bookId);
 
@@ -183,7 +185,7 @@ export function StudyCentre() {
             })}
           </ol>
           <p>
-            <Link href={bookHref(bookId)}>← {titleFor(book.data, bn)}</Link>
+            <Link href={backHref}>← {STRINGS[language].backToSyllabus}</Link>
           </p>
         </>
       ) : null}

@@ -128,10 +128,10 @@ describe('Syllabus page', () => {
     await waitFor(() => expect(screen.getByText('Syllabus Overview')).toBeTruthy());
     expect(await screen.findByText(/Session: TEST 2099-2100/)).toBeTruthy();
     expect(screen.getByText('Not yet verified')).toBeTruthy();
-    const link = await screen.findByRole('link', { name: /View Details/ });
+    const link = await screen.findByRole('link', { name: /Study centre/ });
     expect(screen.getByRole('heading', { name: 'Test Book' })).toBeTruthy();
     expect(screen.getByText(/Test Author/)).toBeTruthy();
-    expect(link.getAttribute('href')).toContain('/book?id=b1&back=');
+    expect(link.getAttribute('href')).toContain('/study?book=b1&back=');
     const urls = fetchMock.mock.calls.map((call) => call[0]);
     expect(urls).toContain('http://api.test/api/v1/books?syllabusId=s1');
     fireEvent.click(screen.getByRole('tab', { name: 'Course Details' }));
