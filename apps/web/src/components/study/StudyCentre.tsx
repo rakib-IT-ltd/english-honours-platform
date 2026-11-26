@@ -83,7 +83,7 @@ export function StudyCentre() {
           {message}
         </p>
       ) : null}
-      {book.status === 'ok' && list.length > 0 ? (
+      {book.status === 'ok' && sections.status === 'ok' ? (
         <>
           <h2 className="study-h2">{t.yourStudyCentre}</h2>
           <p className="muted study-lead">{t.exploreEssay}</p>
@@ -155,35 +155,40 @@ export function StudyCentre() {
             })}
           </div>
 
-          <h2 className="study-h3">
-            {t.structure} · {list.length} {t.sectionsWord}
-          </h2>
-          <ol className="study-sections">
-            {list.map((section) => {
-              const done = mine.data.completedSectionIds.includes(section.id);
-              const marked = mine.data.bookmarkedSectionIds.includes(section.id);
-              const subtitle = bn && section.subtitleBn ? section.subtitleBn : section.subtitleEn;
-              return (
-                <li key={section.id}>
-                  <Link href={studyReadHref(bookId, section.id)}>
-                    <span className={`study-num${done ? ' is-done' : ''}`}>
-                      {done ? '✓' : section.sequence}
-                    </span>
-                    <span className="study-sec-text">
-                      <strong>{titleFor(section, bn)}</strong>
-                      {subtitle ? <small>{subtitle}</small> : null}
-                    </span>
-                    {marked ? (
-                      <span className="study-marked" aria-label={t.bookmarked}>
-                        <StudyIcon name="BOOKMARK" size={16} />
-                      </span>
-                    ) : null}
-                    <StudyIcon name="CHEVRON" size={16} />
-                  </Link>
-                </li>
-              );
-            })}
-          </ol>
+          {list.length > 0 ? (
+            <>
+              <h2 className="study-h3">
+                {t.structure} · {list.length} {t.sectionsWord}
+              </h2>
+              <ol className="study-sections">
+                {list.map((section) => {
+                  const done = mine.data.completedSectionIds.includes(section.id);
+                  const marked = mine.data.bookmarkedSectionIds.includes(section.id);
+                  const subtitle =
+                    bn && section.subtitleBn ? section.subtitleBn : section.subtitleEn;
+                  return (
+                    <li key={section.id}>
+                      <Link href={studyReadHref(bookId, section.id)}>
+                        <span className={`study-num${done ? ' is-done' : ''}`}>
+                          {done ? '✓' : section.sequence}
+                        </span>
+                        <span className="study-sec-text">
+                          <strong>{titleFor(section, bn)}</strong>
+                          {subtitle ? <small>{subtitle}</small> : null}
+                        </span>
+                        {marked ? (
+                          <span className="study-marked" aria-label={t.bookmarked}>
+                            <StudyIcon name="BOOKMARK" size={16} />
+                          </span>
+                        ) : null}
+                        <StudyIcon name="CHEVRON" size={16} />
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ol>
+            </>
+          ) : null}
           <p>
             <Link href={backHref}>← {STRINGS[language].backToSyllabus}</Link>
           </p>
