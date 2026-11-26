@@ -80,15 +80,12 @@ export function BookView() {
               )}
             </dl>
             {book.data.description ? <p>{book.data.description}</p> : null}
-            {hasStudy ? (
-              <p>
-                <Link className="study-primary" href={studyHref(id)}>
-                  {STUDY_TEXT[language].studyCentre} →
-                </Link>
-              </p>
-            ) : (
-              <p className="notice">{t.materialsSoon}</p>
-            )}
+            <p>
+              <Link className="study-primary" href={studyHref(id)}>
+                {STUDY_TEXT[language].studyCentre} →
+              </Link>
+            </p>
+            {hasStudy ? null : <p className="notice">{t.materialsSoon}</p>}
           </article>
         ) : null}
       </main>

@@ -179,6 +179,16 @@ describe('Book page', () => {
     );
   });
 
+  it('always offers the study centre; says material is coming when none is published', async () => {
+    vi.stubEnv('NEXT_PUBLIC_API_BASE_URL', 'http://api.test/api/v1');
+    search.value = 'id=b1';
+    stubApi({ '/books/b1/sections': [] });
+    wrap(<BookView />);
+    const link = await screen.findByRole('link', { name: /Study centre/ });
+    expect(link.getAttribute('href')).toBe('/study?book=b1');
+    await waitFor(() => expect(screen.getByText(/coming soon/)).toBeTruthy());
+  });
+
   it('ignores an off-site back address', async () => {
     vi.stubEnv('NEXT_PUBLIC_API_BASE_URL', 'http://api.test/api/v1');
     search.value = 'id=b1&back=https%3A%2F%2Fevil.example';
