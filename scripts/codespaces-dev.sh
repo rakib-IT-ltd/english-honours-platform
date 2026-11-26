@@ -16,6 +16,23 @@ WEB_URL="https://${CODESPACE_NAME}-3000.${GITHUB_CODESPACES_PORT_FORWARDING_DOMA
 API_URL="https://${CODESPACE_NAME}-3001.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
 AUTH_URL="https://${CODESPACE_NAME}-9099.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
 
+# Stops anything left over from an earlier run (an old web server, API or emulator that is still
+# holding a port makes the new one fail or answer with "404 page can't be found").
+PORTS="3000 3001 3002 4400 4401 4500 4501 9099"
+free_ports() {
+  for port in ${PORTS}; do
+    if command -v lsof >/dev/null 2>&1; then
+      lsof -ti "tcp:${port}" 2>/dev/null | xargs -r kill 2>/dev/null || true
+    elif command -v fuser >/dev/null 2>&1; then
+      fuser -k "${port}/tcp" >/dev/null 2>&1 || true
+    fi
+  done
+  pkill -f "next dev" 2>/dev/null || true
+  pkill -f "firebase-tools" 2>/dev/null || true
+  sleep 1
+}
+free_ports
+
 # After a "git pull" new packages may be needed (installing also regenerates the database client).
 pnpm install
 pnpm db:generate
@@ -57,5 +74,5 @@ done
 FIREBASE_PROJECT_ID=demo-ehp FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099 \
   CORS_ORIGINS="${WEB_URL}" pnpm dev:api &
 API_PID=$!
-trap 'kill "${API_PID}" "${EMULATOR_PID}" 2>/dev/null || true' EXIT
+trap 'kill "${API_PID}" "${EMULATOR_PID}" 2>/dev/null || true; free_ports' EXIT
 pnpm dev:web
