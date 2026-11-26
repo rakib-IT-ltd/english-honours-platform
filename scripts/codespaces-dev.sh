@@ -26,6 +26,8 @@ pnpm --filter @ehp/shared-types build
 pnpm db:migrate:deploy
 pnpm db:seed
 pnpm db:load-content
+# Development only: clearly labelled sample study material so the study screens can be tried.
+pnpm db:load-sample
 
 # Only public values go into the browser bundle - no secrets. The Auth Emulator accepts any
 # placeholder API key, so no Firebase account is needed here.

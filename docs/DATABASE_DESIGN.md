@@ -37,6 +37,19 @@ Migrations: `20261120213500_academic_structure`, `20261122100000_multi_universit
 - Both have `publicationStatus` (`DRAFT`, `IN_REVIEW`, `APPROVED`, `PUBLISHED`, default `DRAFT`);
   the public API serves only `PUBLISHED`. Deleting a syllabus or course cascades to its children.
 
+## Study content (ADR 0006)
+
+- `BookSection` (per book; `sequence`, `titleEn/Bn`, `subtitleEn/Bn`, `publicationStatus`,
+  `isSample`) and `StudyItem` (per section; `kind`, `sequence`, `textEn`, `textBn`, `noteEn`,
+  `noteBn`; at least one text required by a CHECK).
+- Field use by kind: ORIGINAL_TEXT `textEn` (paragraphs); BANGLA_EXPLANATION `textBn`; SUMMARY,
+  CRITICAL_ANALYSIS, CENTRAL_IDEA `textEn` and/or `textBn`; QUOTATION `textEn` = the quotation,
+  `noteEn/noteBn` = its meaning; QUESTION_ANSWER `textEn/textBn` = question, `noteEn/noteBn` =
+  answer; VOCABULARY `textEn` = word, `textBn` = Bangla meaning, `noteEn` = English meaning.
+- Student data: `Bookmark`, `StudyNote` (one per user and section, 1-5000 characters),
+  `SectionProgress` (`openedAt`, `completedAt`). Deleting a user or section cascades.
+- `Book.genre` (short label, e.g. "Essay / Prose").
+
 ## Not yet designed
 
 Topics, authors, literary works, learning resources,

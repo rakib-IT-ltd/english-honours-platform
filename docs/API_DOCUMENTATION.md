@@ -31,6 +31,26 @@ Only `PUBLISHED` courses and books are returned; a book also needs its course to
 Anything else is 404 on `/{id}` and absent from lists. `/courses/{id}` includes its published books;
 `/books/{id}` includes its course.
 
+## Study material (public; only `PUBLISHED` content)
+
+| Endpoint                             | Purpose                                                                                                                                                            |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `GET /books/:bookId/sections`        | Published sections of a book, with the kinds of material available                                                                                                 |
+| `GET /sections/:id`                  | One section with all its items, and previous/next section ids                                                                                                      |
+| `GET /books/:bookId/resources/:kind` | One kind (`ORIGINAL_TEXT`, `BANGLA_EXPLANATION`, `SUMMARY`, `CRITICAL_ANALYSIS`, `QUOTATION`, `QUESTION_ANSWER`, `VOCABULARY`, `CENTRAL_IDEA`) across the sections |
+
+404 when the book/section is not published; 400 for an unknown kind.
+
+## My study data (requires `Authorization: Bearer <Firebase ID token>`)
+
+| Endpoint                                         | Purpose                                               |
+| ------------------------------------------------ | ----------------------------------------------------- |
+| `GET /me/study/books/:bookId`                    | My completed sections, last section, bookmarks, notes |
+| `PUT /me/study/sections/:id/progress`            | `{ "completed": true/false }`; also records "opened"  |
+| `PUT` / `DELETE /me/study/sections/:id/bookmark` | Add / remove my bookmark                              |
+| `PUT /me/study/sections/:id/note`                | `{ "body": "..." }` (1-5000 characters)               |
+| `DELETE /me/study/sections/:id/note`             | Delete my note                                        |
+
 ## Student account (requires `Authorization: Bearer <Firebase ID token>`)
 
 | Endpoint          | Purpose                                                                                   |

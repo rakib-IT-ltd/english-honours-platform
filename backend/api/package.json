@@ -19,6 +19,7 @@
     "db:migrate:deploy": "prisma migrate deploy",
     "db:seed": "node scripts/seed.mjs",
     "db:load-content": "node scripts/load-content.mjs",
+    "db:load-sample": "node scripts/load-content.mjs --sample",
     "db:studio": "prisma studio"
   },
   "dependencies": {

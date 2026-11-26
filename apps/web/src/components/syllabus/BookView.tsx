@@ -3,8 +3,12 @@
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useApiItem } from '../../hooks/useApiItem';
+import { useApiList } from '../../hooks/useApiList';
 import { buildApiUrl, getApiBaseUrl } from '../../lib/api';
 import { STRINGS } from '../../lib/i18n';
+import { studyHref } from '../../lib/routes';
+import { STUDY_TEXT } from '../../lib/studyText';
+import type { SectionSummary } from '../../types/study';
 import { titleFor, type BookDetail } from '../../types/academic';
 import { useLanguage } from '../providers/AppProviders';
 import { PageShell } from '../layout/PageShell';
@@ -26,6 +30,11 @@ export function BookView() {
   const book = useApiItem<BookDetail>(
     base && id ? buildApiUrl(base, `books/${encodeURIComponent(id)}`) : null,
   );
+
+  const sections = useApiList<SectionSummary>(
+    base && id ? buildApiUrl(base, `books/${encodeURIComponent(id)}/sections`) : null,
+  );
+  const hasStudy = sections.status === 'ok' && sections.data.length > 0;
 
   let message: string | null = null;
   if (!id) message = t.bookNotFound;
@@ -71,7 +80,15 @@ export function BookView() {
               )}
             </dl>
             {book.data.description ? <p>{book.data.description}</p> : null}
-            <p className="notice">{t.materialsSoon}</p>
+            {hasStudy ? (
+              <p>
+                <Link className="study-primary" href={studyHref(id)}>
+                  {STUDY_TEXT[language].studyCentre} →
+                </Link>
+              </p>
+            ) : (
+              <p className="notice">{t.materialsSoon}</p>
+            )}
           </article>
         ) : null}
       </main>

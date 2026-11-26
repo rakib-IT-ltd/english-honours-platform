@@ -54,3 +54,19 @@ describe('NU English Honours verification file', () => {
     expect(verification).toContain('INSERT INTO "SyllabusVerification"');
   });
 });
+
+describe('Development sample study material', () => {
+  const sample = read('database/prisma/dev-samples/sample-study-book.sql').toString('utf8');
+
+  it('is labelled as not real and marks every section as a sample', () => {
+    expect(sample).toContain('NOT REAL ACADEMIC MATERIAL');
+    expect(sample).toContain('SAMPLE: Study Centre Test Book');
+    expect(sample.match(/'PUBLISHED', true/g)).toHaveLength(3);
+  });
+
+  it('is never inside the real content folder', () => {
+    expect(sample).not.toContain('Emerson');
+    const loader = read('backend/api/scripts/load-content.mjs').toString('utf8');
+    expect(loader).toContain("process.env.NODE_ENV === 'production'");
+  });
+});

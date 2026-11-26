@@ -254,7 +254,10 @@ model User {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
-  profile StudentProfile?
+  profile         StudentProfile?
+  bookmarks       Bookmark[]
+  studyNotes      StudyNote[]
+  sectionProgress SectionProgress[]
 }
 
 /// A student's academic identity: university + program + level (+ session, once known).
@@ -317,12 +320,115 @@ model Book {
   edition           String?
   publicationYear   Int?
   description       String?
+  /// Short kind label shown in the study centre header, e.g. "Essay / Prose".
+  genre             String?
   sequence          Int               @default(0)
   publicationStatus PublicationStatus @default(DRAFT)
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
 
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course   Course        @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  sections BookSection[]
 
   @@index([courseId, publicationStatus])
+}
+
+/// The kinds of study material attached to a section of a book.
+enum StudyResourceKind {
+  ORIGINAL_TEXT
+  BANGLA_EXPLANATION
+  SUMMARY
+  CRITICAL_ANALYSIS
+  QUOTATION
+  QUESTION_ANSWER
+  VOCABULARY
+  CENTRAL_IDEA
+}
+
+/// One section of a book (a chapter, a part of an essay) for guided reading.
+/// Students see a section only when it is PUBLISHED and its book and course are too.
+model BookSection {
+  id                String            @id @default(uuid())
+  bookId            String
+  sequence          Int
+  titleEn           String
+  titleBn           String?
+  subtitleEn        String?
+  subtitleBn        String?
+  publicationStatus PublicationStatus @default(DRAFT)
+  /// True for development sample content. The website labels it clearly; never for real material.
+  isSample          Boolean           @default(false)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  book            Book              @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  items           StudyItem[]
+  bookmarks       Bookmark[]
+  studyNotes      StudyNote[]
+  sectionProgress SectionProgress[]
+
+  @@unique([bookId, sequence])
+  @@index([bookId, publicationStatus])
+}
+
+/// One piece of study material. Field use by kind is documented in docs/DATABASE_DESIGN.md.
+model StudyItem {
+  id        String            @id @default(uuid())
+  sectionId String
+  kind      StudyResourceKind
+  sequence  Int
+  textEn    String?
+  textBn    String?
+  noteEn    String?
+  noteBn    String?
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  section BookSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  @@unique([sectionId, kind, sequence])
+}
+
+/// A student's bookmark on a section.
+model Bookmark {
+  id        String   @id @default(uuid())
+  userId    String
+  sectionId String
+  createdAt DateTime @default(now())
+
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  section BookSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, sectionId])
+  @@index([sectionId])
+}
+
+/// A student's personal note on a section (one note per section).
+model StudyNote {
+  id        String   @id @default(uuid())
+  userId    String
+  sectionId String
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  section BookSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, sectionId])
+  @@index([sectionId])
+}
+
+/// Reading progress of a student in a section: opened (always) and completed (when marked).
+model SectionProgress {
+  userId      String
+  sectionId   String
+  openedAt    DateTime  @default(now())
+  completedAt DateTime?
+
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  section BookSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  @@id([userId, sectionId])
+  @@index([sectionId])
 }

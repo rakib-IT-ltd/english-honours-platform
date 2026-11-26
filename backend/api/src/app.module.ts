@@ -8,6 +8,7 @@ import { BooksModule } from './books/books.module.js';
 import { CoursesModule } from './courses/courses.module.js';
 import { DepartmentsModule } from './departments/departments.module.js';
 import { HealthModule } from './health/health.module.js';
+import { StudyModule } from './study/study.module.js';
 import { SyllabusesModule } from './syllabuses/syllabuses.module.js';
 import { UsersModule } from './users/users.module.js';
 import { UniversitiesModule } from './universities/universities.module.js';
@@ -31,6 +32,7 @@ import { PrismaModule } from './database/prisma.module.js';
     SyllabusesModule,
     CoursesModule,
     BooksModule,
+    StudyModule,
     UsersModule,
   ],
 })

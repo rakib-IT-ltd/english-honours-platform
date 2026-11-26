@@ -10,6 +10,8 @@ export class BookDto {
   @ApiProperty({ type: String, nullable: true }) edition!: string | null;
   @ApiProperty({ type: Number, nullable: true }) publicationYear!: number | null;
   @ApiProperty({ type: String, nullable: true }) description!: string | null;
+  @ApiProperty({ type: String, nullable: true, description: 'e.g. Essay / Prose' })
+  genre!: string | null;
   @ApiProperty({ type: Number }) sequence!: number;
 }
 

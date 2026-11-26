@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+### Added (study centre)
+
+- Study centre for a book (mobile first, navy header, bottom navigation): resource tiles in the
+  approved pastel colours, structure list, reading progress, guided section-by-section reading with
+  resource tabs (original text, Bangla explanation, summary, analysis, quotations, Q&A, vocabulary,
+  central ideas), bookmarks, personal notes, previous/next and completion. Pages `/study`,
+  `/study/resource`, `/study/read`; the book page links to it when study material exists.
+- Database: `BookSection`, `StudyItem`, `Bookmark`, `StudyNote`, `SectionProgress`, `Book.genre`
+  (migration `20261125100000_study_content`). API: `/books/:id/sections`, `/sections/:id`,
+  `/books/:id/resources/:kind`, `/me/study/...`.
+- No real study content is included. A clearly labelled development sample
+  (`pnpm db:load-sample`, never in production) lets the screens be tried in the Codespace.
+- Fixed: CORS now allows `DELETE`.
+
 ### Changed
 
 - Home page: removed the Bangla title line; mobile layout reworked (single-column header, scrollable

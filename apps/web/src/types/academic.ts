@@ -50,6 +50,7 @@ export interface Book {
   edition: string | null;
   publicationYear: number | null;
   description: string | null;
+  genre: string | null;
   sequence: number;
 }
 

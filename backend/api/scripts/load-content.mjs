@@ -15,7 +15,18 @@ if (!process.env.DATABASE_URL) {
   process.exit(1);
 }
 
-const dir = fileURLToPath(new URL('../../../database/prisma/content/', import.meta.url));
+// `--sample` loads the clearly labelled DEVELOPMENT sample material instead (never in production).
+const sample = process.argv.includes('--sample');
+if (sample && process.env.NODE_ENV === 'production') {
+  console.error('Sample material must never be loaded in production.');
+  process.exit(1);
+}
+const dir = fileURLToPath(
+  new URL(
+    sample ? '../../../database/prisma/dev-samples/' : '../../../database/prisma/content/',
+    import.meta.url,
+  ),
+);
 const files = readdirSync(dir)
   .filter((name) => name.endsWith('.sql'))
   .sort();
