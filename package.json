@@ -21,7 +21,8 @@
     "db:migrate:deploy": "pnpm --filter @ehp/api db:migrate:deploy",
     "db:seed": "pnpm --filter @ehp/api db:seed",
     "db:load-content": "pnpm --filter @ehp/api db:load-content",
-    "db:load-sample": "pnpm --filter @ehp/api db:load-sample"
+    "db:load-sample": "pnpm --filter @ehp/api db:load-sample",
+    "db:publish-study": "pnpm --filter @ehp/api db:publish-study"
   },
   "devDependencies": {
     "oxlint": "^1.58.0",

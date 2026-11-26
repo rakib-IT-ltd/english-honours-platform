@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+### Added (first study material: The American Scholar)
+
+- NU Masters 311111 (Prose), "The American Scholar" (Emerson): 5 sections loaded as **DRAFT** from the
+  two supplied PDFs - original text (46 paragraphs, checked word for word against the full-text PDF),
+  Bangla explanations, summaries, central ideas, quotations with Bangla meaning, critical analysis
+  and 25 practice questions. Sources and SHA-256 in `academic-content/literature/the-american-scholar/`.
+- The notes are unattributed and unofficial, carry no written answers and no vocabulary; none were
+  invented. Questions show "No answer has been added yet."
+- `pnpm db:publish-study -- "The American Scholar" --reviewed-by "Name"` publishes a book's draft
+  sections after review (a reviewer name is required). Re-loading content never changes status.
+
 ### Changed (study centre layout)
 
 - Syllabus book list: the "View Details" button is replaced by "Study centre".

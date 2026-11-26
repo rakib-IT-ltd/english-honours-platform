@@ -239,3 +239,29 @@ describe('Resource colours', () => {
     });
   });
 });
+
+describe('questions without a written answer', () => {
+  it('shows a plain "no answer yet" note instead of an empty answer', async () => {
+    const { StudyItems } = await import('../src/components/study/StudyItems');
+    // Clearly labelled TEST data only.
+    const items = [
+      {
+        id: 'q1',
+        kind: 'QUESTION_ANSWER' as const,
+        sequence: 1,
+        textEn: 'Test question?',
+        textBn: null,
+        noteEn: null,
+        noteBn: null,
+      },
+    ];
+    const { container } = render(
+      <AppProviders>
+        <StudyItems kind="QUESTION_ANSWER" items={items} language="en" />
+      </AppProviders>,
+    );
+    expect(container.textContent).toContain('Test question?');
+    expect(container.textContent).toContain('No answer has been added yet.');
+    expect(container.textContent).not.toContain('Answer: ');
+  });
+});

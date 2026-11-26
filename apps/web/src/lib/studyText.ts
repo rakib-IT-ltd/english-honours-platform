@@ -23,6 +23,7 @@ interface StudyStrings {
   sampleBanner: string;
   noSections: string;
   noMaterial: string;
+  answerNotAdded: string;
   home: string;
   reading: string;
   myNotes: string;
@@ -93,6 +94,7 @@ const en: StudyStrings = {
   sampleBanner: 'Sample content for testing the screens. This is not real academic material.',
   noSections: 'Study material for this book is not available yet.',
   noMaterial: 'Nothing has been added here yet.',
+  answerNotAdded: 'No answer has been added yet.',
   home: 'Home',
   reading: 'Reading',
   myNotes: 'My Notes',
@@ -164,6 +166,7 @@ const bn: StudyStrings = {
   sampleBanner: 'পর্দা পরীক্ষার জন্য নমুনা বিষয়বস্তু। এটি প্রকৃত একাডেমিক উপকরণ নয়।',
   noSections: 'এই বইয়ের পাঠ-উপকরণ এখনো পাওয়া যায়নি।',
   noMaterial: 'এখানে এখনো কিছু যোগ করা হয়নি।',
+  answerNotAdded: 'এখনো কোনো উত্তর যোগ করা হয়নি।',
   home: 'হোম',
   reading: 'পাঠ',
   myNotes: 'আমার নোট',

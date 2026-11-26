@@ -96,10 +96,14 @@ export function StudyItems({
               <b>{t.question}: </b>
               {pickText(item.textEn, item.textBn, language)}
             </summary>
-            <p>
-              <b>{t.answer}: </b>
-              {pickText(item.noteEn, item.noteBn, language)}
-            </p>
+            {pickText(item.noteEn, item.noteBn, language) ? (
+              <p>
+                <b>{t.answer}: </b>
+                {pickText(item.noteEn, item.noteBn, language)}
+              </p>
+            ) : (
+              <p className="muted">{t.answerNotAdded}</p>
+            )}
           </details>
         ))}
       </div>
