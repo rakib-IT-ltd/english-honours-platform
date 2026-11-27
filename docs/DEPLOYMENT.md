@@ -60,6 +60,20 @@ pnpm db:publish-study -- "The American Scholar" --reviewed-by "Your Name"
 - The website lists universities and The American Scholar's study centre opens.
 - Register and sign in work (needs step 1.4).
 
+## Keep the API awake (optional, free)
+
+The free API sleeps after 15 minutes without visits; the next visitor then waits about a minute.
+A free uptime monitor visiting it every few minutes prevents that.
+
+1. Sign up at <https://uptimerobot.com> (free plan).
+2. **Add New Monitor** -> type **HTTP(s)** -> URL `https://ehp-api.onrender.com/api/v1/health` ->
+   interval 5 to 10 minutes (use the shortest the free plan allows, but under 15).
+3. Use `/health`, not `/health/ready`: it does not touch the database, so Neon still sleeps when idle
+   and its free compute hours are not used up.
+
+If the API is still slow while awake, that is a code or query problem, not the free tier: report the
+page and the delay so it can be measured.
+
 ## Things to know
 
 - **Sleep:** the free API sleeps after 15 minutes idle; the next visit waits about a minute. The
