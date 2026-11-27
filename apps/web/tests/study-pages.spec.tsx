@@ -265,3 +265,40 @@ describe('questions without a written answer', () => {
     expect(container.textContent).not.toContain('Answer: ');
   });
 });
+
+describe('reading text layout', () => {
+  it('keeps line breaks of verse and epigraphs, and leaves normal paragraphs for justification', async () => {
+    const { StudyItems } = await import('../src/components/study/StudyItems');
+    // Clearly labelled TEST data only.
+    const items = [
+      {
+        id: 'o1',
+        kind: 'ORIGINAL_TEXT' as const,
+        sequence: 1,
+        textEn: 'Test paragraph one.',
+        textBn: null,
+        noteEn: null,
+        noteBn: null,
+      },
+      {
+        id: 'o2',
+        kind: 'ORIGINAL_TEXT' as const,
+        sequence: 2,
+        textEn: 'Test line A\nTest line B',
+        textBn: null,
+        noteEn: null,
+        noteBn: null,
+      },
+    ];
+    const { container } = render(
+      <AppProviders>
+        <StudyItems kind="ORIGINAL_TEXT" items={items} language="en" />
+      </AppProviders>,
+    );
+    const paragraphs = container.querySelectorAll('p');
+    expect(paragraphs).toHaveLength(2);
+    expect(paragraphs[0]?.className).not.toContain('study-verse');
+    expect(paragraphs[1]?.className).toContain('study-verse');
+    expect(paragraphs[1]?.textContent).toBe('Test line A\nTest line B');
+  });
+});

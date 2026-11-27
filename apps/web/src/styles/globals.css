@@ -1384,10 +1384,13 @@ a.link-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 2.9rem;
-  padding: 0.5rem 1rem;
+  height: 3rem;
+  padding: 0 0.75rem;
+  line-height: 1.15;
+  text-align: center;
   border-radius: 0.7rem;
   font: inherit;
+  font-size: 0.92rem;
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
@@ -1498,8 +1501,9 @@ a.link-button {
   align-items: center;
   justify-content: center;
   text-align: center;
-  min-height: 2.9rem;
-  padding: 0.4rem 0.6rem;
+  height: 3rem;
+  padding: 0 0.6rem;
+  line-height: 1.15;
   border-radius: 0.7rem;
   font-size: 0.85rem;
   font-weight: 600;
@@ -1533,6 +1537,29 @@ a.link-button {
 }
 .study-prose p {
   margin: 0 0 0.9rem;
+}
+/* Reading text is justified so the right edge is straight, for English and Bangla alike. */
+.study-prose p,
+.study-idea p,
+.study-qa p,
+.study-quote blockquote {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+  overflow-wrap: break-word;
+}
+/* Bangla words are never hyphenated: a split inside a conjunct is wrong to read. */
+.study-prose p[lang='bn'],
+.study-idea p[lang='bn'],
+.study-qa p[lang='bn'],
+.study-bn {
+  hyphens: manual;
+}
+.study-prose p.study-verse {
+  text-align: left;
+  hyphens: none;
+  white-space: pre-line;
+  margin-left: 1rem;
 }
 .study-original p {
   font-family: var(--serif);
@@ -1618,7 +1645,10 @@ a.link-button {
 }
 .study-actions > * {
   width: 100%;
-  min-height: 2.9rem;
+  height: 3rem;
+}
+.study-actions > :only-child {
+  grid-column: 1 / -1;
 }
 .study-pager {
   display: flex;
@@ -1628,7 +1658,8 @@ a.link-button {
 }
 .study-pager button {
   flex: 1 1 0;
-  min-height: 2.9rem;
+  height: 3rem;
+  font-size: 0.92rem;
   border-radius: 0.7rem;
   border: 1px solid var(--border);
   background: #fff;

@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+### Added (second study book: Tradition and Individual Talent) and justified reading text
+
+- NU Masters 311111 (Prose), "Tradition and Individual Talent" (T. S. Eliot): 3 sections (Eliot's
+  Parts I-III) loaded as **DRAFT** from the two supplied PDFs - 21 original-text paragraphs (checked
+  word for word against the full-text PDF), Bangla explanations, summaries, central ideas, 9
+  quotations with Bangla meaning, 9 terms (as Vocabulary), critical analysis and 35 practice
+  questions without answers. Sources and SHA-256 in
+  `academic-content/literature/tradition-and-the-individual-talent/`, with reviewer points (the first
+  quotation is not Eliot's exact wording). Publish after review with
+  `pnpm db:publish-study -- "Tradition and Individual Talent" --reviewed-by "Name"`.
+- Study reading text is now justified (straight right edge), English with hyphenation and Bangla
+  without; verse and epigraphs keep their line breaks and are not justified. All study buttons share
+  one height, and a lone action button spans the full row.
+
 ### Added (free-tier online hosting)
 
 - `render.yaml` (Render Blueprint: API + static website), `docs/DEPLOYMENT.md` step-by-step guide with

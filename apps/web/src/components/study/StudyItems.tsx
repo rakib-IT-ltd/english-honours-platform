@@ -9,11 +9,20 @@ function Paragraphs({ text, lang }: { text: string; lang: 'en' | 'bn' }) {
         .split(/\n{2,}/)
         .map((paragraph) => paragraph.trim())
         .filter(Boolean)
-        .map((paragraph, index) => (
-          <p key={index} lang={lang} className={lang === 'bn' ? 'study-bn' : undefined}>
-            {paragraph}
-          </p>
-        ))}
+        .map((paragraph, index) => {
+          // Verse and epigraphs keep their own line breaks and are not justified.
+          const classes = [
+            lang === 'bn' ? 'study-bn' : '',
+            paragraph.includes('\n') ? 'study-verse' : '',
+          ]
+            .filter(Boolean)
+            .join(' ');
+          return (
+            <p key={index} lang={lang} className={classes || undefined}>
+              {paragraph}
+            </p>
+          );
+        })}
     </>
   );
 }
