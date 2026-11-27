@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Added (free-tier online hosting)
+
+- `render.yaml` (Render Blueprint: API + static website), `docs/DEPLOYMENT.md` step-by-step guide with
+  Neon and Firebase, ADR 0007. `next.config.ts`: `STATIC_EXPORT=true` builds the website as a static
+  site without a sub-path (the GitHub Pages build is unchanged).
+
 ### Added (first study material: The American Scholar)
 
 - NU Masters 311111 (Prose), "The American Scholar" (Emerson): 5 sections loaded as **DRAFT** from the

@@ -1,0 +1,48 @@
+# Render Blueprint - free-tier hosting for the English Honours platform (see docs/DEPLOYMENT.md).
+# Secrets are NEVER written here: every `sync: false` value is typed into the Render dashboard.
+services:
+  # NestJS API. Free instances sleep after 15 minutes without traffic (first request ~1 minute).
+  - type: web
+    name: ehp-api
+    runtime: node
+    plan: free
+    region: singapore
+    healthCheckPath: /api/v1/health
+    buildCommand: >-
+      corepack enable && pnpm install --frozen-lockfile --prod=false &&
+      pnpm --filter @ehp/shared-types build && pnpm --filter @ehp/api build
+    # Applying pending migrations is idempotent and fast; it keeps the schema in step with the code.
+    startCommand: >-
+      pnpm --filter @ehp/api db:migrate:deploy && pnpm --filter @ehp/api start:prod
+    envVars:
+      - key: NODE_VERSION
+        value: 22.18.0
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL # Neon DIRECT connection string (host without "-pooler"), ends with sslmode=require
+        sync: false
+      - key: CORS_ORIGINS # exact website origin, e.g. https://ehp-web.onrender.com (no trailing slash)
+        sync: false
+      - key: FIREBASE_PROJECT_ID # public id of your real Firebase project
+        sync: false
+
+  # Next.js website, built as a static site (all routes use query parameters, so this works).
+  - type: web
+    name: ehp-web
+    runtime: static
+    plan: free
+    buildCommand: >-
+      corepack enable && pnpm install --frozen-lockfile --prod=false &&
+      pnpm --filter @ehp/shared-types build && pnpm --filter @ehp/web build
+    staticPublishPath: apps/web/out
+    envVars:
+      - key: NODE_VERSION
+        value: 22.18.0
+      - key: STATIC_EXPORT
+        value: 'true'
+      - key: NEXT_PUBLIC_API_BASE_URL # e.g. https://ehp-api.onrender.com/api/v1
+        sync: false
+      - key: NEXT_PUBLIC_FIREBASE_API_KEY # public web key, not a secret
+        sync: false
+      - key: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+        sync: false
