@@ -29,8 +29,7 @@ services:
   # Next.js website, built as a static site (all routes use query parameters, so this works).
   - type: web
     name: ehp-web
-    runtime: static
-    plan: free
+    runtime: static # static sites are always free: no plan line
     buildCommand: >-
       corepack enable && pnpm install --frozen-lockfile --prod=false &&
       pnpm --filter @ehp/shared-types build && pnpm --filter @ehp/web build
