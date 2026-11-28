@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+### Added (Phase 0 of the Academic CMS: decisions, export and restore)
+
+- ADR 0008 (Academic CMS and section-level bilingual content) and ADR 0009 (roles, permissions and
+  enforcement of the approval rules), recording the owner's approval in principle and his decisions.
+  Nothing else is implemented yet: no migration and no change to the website or API.
+- `pnpm db:export-content` (full JSON export with per-table checksums; `-- --content-only` leaves out
+  students' data) and `pnpm db:restore-content` (restores into a migrated database in one
+  transaction, refuses without `--confirm-database <name>`, verifies every table against its checksum
+  before committing). `scripts/restore.sh` restores a `scripts/backup.sh` dump into an empty
+  database. `docs/BACKUP_AND_RESTORE.md` has the procedure, the test results and the plan for
+  automated off-site backups. Tested on a scratch PostgreSQL database; 22 new unit tests.
+
 ### Added (second study book: Tradition and Individual Talent) and justified reading text
 
 - NU Masters 311111 (Prose), "Tradition and Individual Talent" (T. S. Eliot): 3 sections (Eliot's

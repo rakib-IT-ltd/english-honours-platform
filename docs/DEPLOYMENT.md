@@ -85,3 +85,7 @@ page and the delay so it can be measured.
   until a paid backup plan is added. Do not rely on this setup for real student data yet.
 - **Swagger** (`/api/docs`) is off in production by design.
 - **Cost guard:** every service uses `plan: free`; there is nothing to be billed.
+
+## Backups
+
+See [`BACKUP_AND_RESTORE.md`](./BACKUP_AND_RESTORE.md): how to export, back up and restore, and the plan for automated off-site backups. Free plans have no dependable backups, so make a backup yourself before any change to the database.

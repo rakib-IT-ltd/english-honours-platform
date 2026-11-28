@@ -21,6 +21,8 @@
     "db:load-content": "node scripts/load-content.mjs",
     "db:load-sample": "node scripts/load-content.mjs --sample",
     "db:publish-study": "node scripts/publish-study.mjs",
+    "db:export-content": "node scripts/export-content.mjs",
+    "db:restore-content": "node scripts/restore-content.mjs",
     "db:studio": "prisma studio"
   },
   "dependencies": {

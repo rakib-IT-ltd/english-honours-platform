@@ -22,7 +22,9 @@
     "db:seed": "pnpm --filter @ehp/api db:seed",
     "db:load-content": "pnpm --filter @ehp/api db:load-content",
     "db:load-sample": "pnpm --filter @ehp/api db:load-sample",
-    "db:publish-study": "pnpm --filter @ehp/api db:publish-study"
+    "db:publish-study": "pnpm --filter @ehp/api db:publish-study",
+    "db:export-content": "pnpm --filter @ehp/api db:export-content",
+    "db:restore-content": "pnpm --filter @ehp/api db:restore-content"
   },
   "devDependencies": {
     "oxlint": "^1.58.0",
