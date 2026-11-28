@@ -63,30 +63,15 @@ Source: 2 universities, 55 courses, 8 sections, 230 study items (Bangla included
 
 Not tested: a real Neon database (the same commands apply; Neon's pooled connection string must not be used).
 
-## Plan: dependable automated backups (NOT implemented yet - needs the owner's decisions)
+## Plan: dependable automated backups (designed, NOT implemented)
 
-Goal: a copy that survives the loss of the database, an accidental change or a bad migration.
+The owner has decided (2026-11-27): encrypted nightly backups to a private Google Cloud Storage bucket in a
+separate Google Cloud project, keys in Google Cloud KMS, a paid database before real users, and no
+automation until the design is reviewed. The full design (architecture, access permissions, recovery
+procedure, cost estimate, restoration test plan, open decisions) is in
+[`BACKUP_ARCHITECTURE.md`](./BACKUP_ARCHITECTURE.md), recorded as
+[ADR 0010](./adr/0010-production-backup-architecture.md).
 
-1. **Provider safety net.** Neon keeps a rolling change history for "undo" restores: according to
-   Neon's documentation (checked 2026-11-27) the **Free plan keeps 6 hours**, paid plans up to 7 days
-   (Launch) or 30 days (Scale), and the Free plan includes one manual snapshot. Check the figures in
-   your Neon console. This is for quick undo, not for long-term backup.
-2. **Nightly off-site copy.** A scheduled job runs `pg_dump`, encrypts the file and stores it in a
-   **private** place. Do **not** keep dumps in this public GitHub repository or in its workflow
-   artifacts (the repository is public). Candidate private places: a private storage bucket (Firebase
-   Storage/Google Cloud Storage is already in the stack) or a separate private repository.
-3. **Retention.** Keep daily copies for 14 days, weekly for 8 weeks, monthly for 12 months.
-4. **Encryption.** Encrypt before upload; the owner holds the key (not stored in the repository).
-5. **Monitoring.** The job reports failure (email/notification) and the newest backup's age is checked.
-6. **Restore drill.** Restore the newest backup into a scratch database monthly and before every
-   database migration of the CMS; record the result. A backup that has not been restored is not a backup.
-7. **Before Phase 1 (first CMS migration):** a fresh full backup, a rehearsal of the migration on a
-   restored copy, and a before/after comparison of the public API output.
-8. **Before real users:** move to a database plan with longer history and backups, or keep the nightly
-   off-site copy running and verified.
-
-### Decisions needed from the owner for step 2-5
-
-- Where should backups be stored (private bucket in your Google/Firebase account, or another private place)?
-- Who holds the encryption key, and where is a second copy kept?
-- Is a small monthly cost for a paid database plan acceptable when real users start?
+Until that system is built, passes its tests and is signed off by the owner, the free-plan warning at the top
+of this page applies: make a backup yourself (`pnpm db:export-content` and `bash scripts/backup.sh`) before
+any change to the database, and do not rely on the free Neon history (6 hours).

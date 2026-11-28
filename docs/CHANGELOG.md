@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Added (production backup architecture - design only)
+
+- `docs/BACKUP_ARCHITECTURE.md` and ADR 0010: the proposed production backup system (private Google Cloud
+  Storage bucket in a separate project, Cloud KMS envelope encryption, nightly jobs with automatic
+  verification, least-privilege access, recovery procedure and kit, cost estimate, restoration test plan).
+  **Nothing has been created or automated**; it waits for the owner's review. `BACKUP_AND_RESTORE.md` now
+  points to it.
+
 ### Added (Phase 0 of the Academic CMS: decisions, export and restore)
 
 - ADR 0008 (Academic CMS and section-level bilingual content) and ADR 0009 (roles, permissions and
