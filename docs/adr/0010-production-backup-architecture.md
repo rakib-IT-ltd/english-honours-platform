@@ -26,6 +26,16 @@ window only and is for development and testing (ADR 0007).
    procedure, estimated costs and restoration test plan are documented and reviewed by the owner.
    Student information and academic materials come first; reliability outweighs a small monthly saving.
 
+## Further owner decisions (2026-11-27)
+
+Nightly backups now (every 6 hours once professors edit daily); bucket in Singapore; a monthly offline copy
+plus an offline escrow key with a sealed second copy held by a trusted person; retention policy left
+unlocked until after the first successful restore drill; a separate billing account if possible and a budget
+alert of about $5 a month; a second owner-controlled Google "break-glass" account whose credentials are
+shared with no one; a deletion log and a stated 12-month backup retention; Neon Launch with a 7-day history
+window as the plan to quote. See section 16 of BACKUP_ARCHITECTURE.md and the hand-setup checklist in
+BACKUP_SETUP_CHECKLIST.md.
+
 ## Proposed design (details in BACKUP_ARCHITECTURE.md)
 
 Scheduled Cloud Run jobs in the backup project dump the database through a read-only Neon role, encrypt each

@@ -299,7 +299,7 @@ has been reviewed and corrected after T3, and the owner has signed off. Until th
 ## 13. Build steps (after your approval; each step reviewed before the next)
 
 1. **Prerequisites (you):** a Google Cloud billing account, the separate project, security keys and
-   2-step verification on the owner account, the break-glass account, a budget alert. I give a checklist; you do these by hand.
+   2-step verification on the owner account, the break-glass account, a budget alert. Done by hand with `BACKUP_SETUP_CHECKLIST.md`.
 2. **Foundations:** bucket, key ring and key, service accounts, permissions, retention and lifecycle, audit logs; documented as a reviewable script in `infrastructure/backup/` (no secrets). Reviewed by you before it runs.
 3. **Backup job:** container and script, tested against a scratch Neon database with sample data.
 4. **Verify job** and the weekly schedule.
@@ -330,16 +330,23 @@ has been reviewed and corrected after T3, and the owner has signed off. Until th
 - Prices and plan limits change; they are re-checked before purchase.
 - Backups contain personal data for as long as they are kept (section 10).
 
-## 16. Decisions I need from you before building
+## 16. Owner decisions (recorded 2026-11-27: "agree to all")
 
-1. **Frequency:** nightly now, and move to every 6 hours when professors start editing daily? (cost difference is negligible)
-2. **Region:** Singapore (asia-southeast1) for the bucket, near your users and your current API region?
-3. **Offline copy and escrow key:** monthly offline copy and an offline escrow key as in sections 5 and 9? Who is the trusted second keeper of the sealed record?
-4. **Retention lock:** agree to leave the retention policy unlocked until the first successful drill, and decide on locking then?
-5. **Billing:** the backup project on the same Google billing account as other things (the 3 free scheduler jobs are per billing account), or a separate one? What budget alert amount?
-6. **Break-glass account:** a second Google account you control (please do not send me any credentials; just confirm it exists).
-7. **Deletion policy:** accept the deletion-log approach and a stated 12-month backup retention in the privacy notice?
-8. **Neon plan:** Launch with a 7-day history window as the plan to quote for (Scale offers up to 30 days at a higher compute price)?
+| #   | Decision                    | Chosen                                                                                                                                                            |
+| --- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Backup frequency            | **Nightly now**; move to every 6 hours when professors start editing daily                                                                                        |
+| 2   | Bucket region               | **Singapore (asia-southeast1)**                                                                                                                                   |
+| 3   | Offline copy and escrow key | **Yes**: a monthly offline copy and an offline recovery (escrow) key on paper, with a sealed second copy held by a trusted person                                 |
+| 4   | Retention lock              | **Left unlocked** until after the first successful restore drill; then decide (locking is permanent)                                                              |
+| 5   | Billing                     | A **separate billing account** if Google allows it (otherwise the same one; the 3 free scheduler jobs are per billing account); **budget alert about $5 a month** |
+| 6   | Break-glass account         | A **second Google account controlled only by the owner**; its credentials are never shared with anyone, including the assistant                                   |
+| 7   | Student deletions           | A **deletion log** (identifier and date, no personal content) re-applied after any restore; the privacy notice states backups are kept up to **12 months**        |
+| 8   | Neon plan to quote          | **Launch** with a **7-day history window** (the quote is shown to the owner before any upgrade)                                                                   |
+
+The hand-done prerequisites that follow from these decisions are in
+[`BACKUP_SETUP_CHECKLIST.md`](./BACKUP_SETUP_CHECKLIST.md). Build step 1 is not finished until the owner
+has completed that checklist; building (step 2 onward) still needs the owner's explicit go-ahead after
+reviewing the checklist results.
 
 ## Sources (checked 2026-11-27)
 

@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Added (backup setup checklist)
+
+- `docs/BACKUP_SETUP_CHECKLIST.md`: the prerequisites the owner completes by hand (account protection,
+  break-glass account, password-manager and offline records, Google Cloud project and budget alert) before
+  any backup infrastructure is built. The owner's eight decisions are recorded in `BACKUP_ARCHITECTURE.md`
+  and ADR 0010. Still design and documentation only: nothing has been created or automated.
+
 ### Added (production backup architecture - design only)
 
 - `docs/BACKUP_ARCHITECTURE.md` and ADR 0010: the proposed production backup system (private Google Cloud
